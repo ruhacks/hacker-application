@@ -1,4 +1,4 @@
-import firebase from 'firebase'
+import firebase from 'firebase';
 
 //Firebase Config
 const config = {
@@ -8,7 +8,7 @@ const config = {
     projectId: "ru-hacks",
     storageBucket: "ru-hacks.appspot.com",
     messagingSenderId: "73932887478"
-}
+};
 
 firebase.initializeApp(config);
 
