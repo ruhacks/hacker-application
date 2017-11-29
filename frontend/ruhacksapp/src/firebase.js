@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import * as firebase from 'firebase';
 
 //Firebase Config
 const config = {
@@ -10,9 +10,9 @@ const config = {
     messagingSenderId: "73932887478"
 };
 
-firebase.initializeApp(config);
+export const firebaseApp = firebase.initializeApp(config);
 
-export const provider = new firebase.auth.GoogleAuthProvider();
-export const auth = firebase.auth();
-export const database = firebase.database();
-export default firebase;
+   // export const provider = new firebase.auth.GoogleAuthProvider();
+   // export const auth = firebase.auth();
+   // export const database = firebase.database();
+
