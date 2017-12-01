@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>RU Hacks Sign Up Form</title>
+</head>
+
+<body>
+  <h1>RU Hacks Sign Up Form</h1>
+
+  <form cf-form>
+    <label>First Name:
+      <input type="text" id="firstname" name="First Name" cf-questions="Hi there! What is your first name? | Wassup? What's your first name?" required>
+    </label>
+    <label>Last Name:
+      <input type="text" name="LastName" cf-questions="Thanks for that, {firstname}! Can I also get your last name? | {firstname}, what is your last name?" required>
+    </label>
+    <label>Email:
+      <input type="email" name="Email" cf-input-placeholder="Enter your email address here" cf-questions="In order for us to contact you {firstname}, I need your email address. | Can you give me your email address so that the RU Hacks team can be in contact with you, {firstname}?" required>
+    </label>
+    <label>Gender:
+      <input type="radio" name="gender" cf-label="Male" cf-questions="I hope this isn't too personal, but can you tell me your gender? If you wish not to say you can just choose other!" required>
+    <input type="radio" name="gender" cf-label="Female" required>
+    <input type="radio" name="gender" cf-label="Other" required>
+    </label>
+    
+    
+    <label>In School
+      <input type="radio" name="in_school" id="inSchool" cf-questions="You're doing great {firstname}! Alright now for some school related questions. Are you currently in school or out of school?">
+    </label>
+    <label>Out of School
+      <input type="radio" name="out_school" id="outSchool">
+    </label>
+    <label>School, Program, Year
+      <input type="text" name="name_school" id="nameSchool" cf-questions="So you're in school! What school/university do you attend? | What is the name of your school?">
+      <input type="text" name="program" id="program" cf-questions="Nicee! What program are you in? | Awesome! What's the name of the program you're in?">
+      <input type="number" name="year" id="year" cf-questions="That's a really cool program! What year are you in right now? | Cool! Also, what year are you in?" >
+    </label>
+
+    <label>Country
+      <input type="text" name="country" id="country" cf-questions="Okay {firstname}, what country are you located?" required>
+    </label>
+    <label>City
+      <input type="text" name="city" id="city" cf-questions="And your city? | I know it is two separate questions, but what city are you in, {firstname}?" required>
+    </label>
+
+    <label>Skills & Experience
+      <input type="text" name="skill" id="skill" cf-questions="So {firstname}, what relevant tech skills do you have up your sleeve? | What are some skills that you are great at?">
+      <input type="text" name="portfolio_site" id="portfolio" cf-questions="Do you have a portfolio site or some place you show case your work?">
+      <input type="text" name="repo" id="repo" cf-questions="If you have a github repo or a repo from another source, please send me the link here!" >
+      <input type="text" name="resume_link" id="resume" cf-questions="All hackathons are great ways to get noticed by big time companies, do you wanna get noticed? Share us a link to your resume and we will pass it along!">
+      <input type="text" name="other" id="other" cf-questions="If there is anything else that you'd like to share with us, such as a LinkedIn profile, drop it below and we will definitely check it out!">
+    </label>
+
+     
+    <label>Hacking
+      <input type="text" name="experience_lvl" id="experienceLvl" cf-questions="How experienced are you with coding and hackathons? | Have you been to many hackathons or is this going to be your first time? | Have you ever experienced a hackathon?">
+      <input type="text" name="referral_source" id="referral" cf-questions="I'm just a bit curious here, how'd you find out about RU Hacks!? | Where did you find about RU Hacks?">
+      <input type="text" name="why_attend" id="whyAttend" cf-questions="Time for some longer questions, first off, why do you want to attend RU Hacks, {firstname}?">
+      <input type="text" name="create_proud" id="createProud" cf-questions="Awesome! Now, what is something that you created that you are most proud of?">
+    </label>
+
+    <label>XXS
+      <input type="radio" name="tshirt size" id="tshirtSize" cf-questions="Alright last question, what's your t-shirt size?">
+    </label>
+    <label>XS
+      <input type="radio" name="tshirt size" id="tshirtSize">
+    </label>
+    <label>S
+      <input type="radio" name="tshirt size" id="tshirtSize">
+    </label>
+    <label>M
+      <input type="radio" name="tshirt size" id="tshirtSize">
+    </label>
+    <label>L
+      <input type="radio" name="tshirt size" id="tshirtSize">
+    </label>
+    <label>XL
+      <input type="radio" name="tshirt size" id="tshirtSize">
+    </label>
+    <label>XXL
+      <input type="radio" name="tshirt size" id="tshirtSize">
+    </label>
+      
+    <label>I agree to the terms and conditions
+      <input type="checkbox" name="Agree to terms">
+    </label>
+
+    <button>Submit</button>
+
+  </form>
+
+
+  <script type="text/javascript" src="https://cf-4053.kxcdn.com/conversational-form/0.9.6/conversational-form.min.js" crossorigin></script>
+
+</body>
+
+</html>
