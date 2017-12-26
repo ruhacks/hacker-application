@@ -1,9 +1,9 @@
 {
   "extends": [
-    "airbnb-base",
     "import",
     "react",
-    "jsx-a11y"
+    "jsx-a11y",
+    "prettier"
   ],
   "env": {
     "browser": true,
