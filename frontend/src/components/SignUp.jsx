@@ -16,10 +16,15 @@ class SignUp extends Component {
   }
   signUp() {
     const { email, password } = this.state;
-    firebaseApp
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .catch((error) => {
+    firebaseApp.auth().createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        firebaseApp.auth().onAuthStateChanged(user => {
+            firebaseApp.database().ref(`users/${user.uid}`).set({
+              email: user.email,
+              verificatonEmailSent: 0,
+            });
+          });
+      }).catch((error) => {
         this.setState({ error });
       });
   }
