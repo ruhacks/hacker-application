@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { firebaseApp } from '../firebase';
+import { Button } from 'reactbulma';
 
 class App extends Component {
   signOut() {
@@ -10,9 +11,9 @@ class App extends Component {
     return (
       <div>
         App
-        <button className="btn btn-danger" onClick={() => this.signOut()}>
+        <Button className="btn btn-danger" onClick={() => this.signOut()}>
           Sign Out
-        </button>
+        </Button>
       </div>
     );
   }
