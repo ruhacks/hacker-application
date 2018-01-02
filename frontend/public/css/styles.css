@@ -20,6 +20,10 @@ body {
   background: white;
 }
 
+#app-sidebar .panel-block.is-active {
+  border-left-width: 5px;
+}
+
 #app-content {
   background:#d8d8d8;
 }
