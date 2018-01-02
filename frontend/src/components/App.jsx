@@ -77,11 +77,11 @@ function showNavLinks(props) {
   let links = [];
 
   if (props.userVerified) {
-    links.push(<PanelLink link='/application' icon='file-text-o' title='Application' label='Application' key='0' />);
+    links.push(<PanelLink link='/application' icon='file-text-o' title='Application' label='Application' className={props.activeTab === 'application' ? 'is-active' : ''} key='0' />);
 
     if (props.userAccepted) {
-      links.push(<PanelLink link='' icon='check-square' title='Confirmation' label='Confirmation' key='1' />);
-      links.push(<PanelLink link='' icon='users' title='Team' label='Team' key='2' />);
+      links.push(<PanelLink link='' icon='check-square' title='Confirmation' label='Confirmation' className={props.activeTab === 'confirmation' ? 'is-active' : ''} key='1' />);
+      links.push(<PanelLink link='' icon='users' title='Team' label='Team' className={props.activeTab === 'team' ? 'is-active' : ''} key='2' />);
     }
   }
 
@@ -96,6 +96,7 @@ class App extends Component {
       userVerified: null,
       userAccepted: null,
       verificationMsgSeen: null,
+      activeTab: props.location.pathname === '/app' ? 'dashboard' : props.location.pathname.substr(1, props.location.pathname.length -1)
     };
 
     this.location = props.location;
@@ -183,7 +184,7 @@ class App extends Component {
         <div className='column is-one-fifth'>
           <Bulma.Panel id='app-sidebar'>
             <Bulma.Panel.Heading>Navigation</Bulma.Panel.Heading>
-            <PanelLink link='/app' icon='tachometer' title='Dashboard' label='Dashboard' />
+            <PanelLink link='/app' icon='tachometer' title='Dashboard' label='Dashboard' className={this.state.activeTab === 'dashboard' ? 'is-active' : ''} />
             <div id='panel-placeholder'></div>
             <PanelLink link='https://2018.ruhacks.com/#FAQ' icon='question-circle-o' title='FAQ' label='FAQ' external={true} />
             <PanelLink link='mailto:hackers@ruhacks.com' icon='envelope-o' title='Contact Us' label='Contact Us' external={true} />
@@ -196,7 +197,7 @@ class App extends Component {
         </div>
         <div id='app-content' className='column'>
           <div id='messages'></div>
-          <div id='view'></div>
+          <div id='view' className='box'></div>
         </div>
       </div>
     );
