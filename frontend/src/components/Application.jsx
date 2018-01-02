@@ -299,10 +299,10 @@ class Application extends Component {
               this.setState({ skillSelection: { ...this.state.skillSelection, [skill]: { ...this.state.skillSelection[skill], checked: true } } });
             });
           } else {
-            console.log('User data cannot  be found');
+            // console.log('User data cannot  be found');
           }
         }, error => {
-          console.log('Failed to get user data', error);
+          // console.log('Failed to get user data', error);
         }
       );
     });
@@ -329,7 +329,7 @@ class Application extends Component {
       ...this.state.userApplication
     }).then(() => {
       // Update successful.
-      console.log('Updated application info', user);
+      // console.log('Updated application info', user);
       
       const messages = document.getElementById('messages');
       const successMsg = document.getElementById('form-success-msg');
@@ -354,7 +354,7 @@ class Application extends Component {
       }
     }).catch(error => {
       // An error happened.
-      console.log('Failed to update application info', user);
+      // console.log('Failed to update application info', user);
       
       const messages = document.getElementById('messages');
       const errorMsg = document.getElementById('form-error-msg');
@@ -678,7 +678,8 @@ class Application extends Component {
           <Bulma.Button className='button is-link' onClick={(event) => {event.preventDefault(); this.submit();}}>
             Save Application
           </Bulma.Button>
-          {/*<input id="submit" type="text" value="bye" name="submit" pattern="^bye$" cf-questions="Thanks for your info.&&We will contact you soon!&&Enter in 'bye' to finish sign up."
+
+          {/*<input id='submit' type='text' value='bye' name='submit' pattern='^bye$' cf-questions={'Thanks for your info.&&We will contact you soon!&&Enter in \'bye\' to finish sign up.'}
             onChange={event => console.log(event)}
           />*/}
         </form>

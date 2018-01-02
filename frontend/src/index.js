@@ -19,7 +19,7 @@ firebaseApp.auth().onAuthStateChanged((user) => {
             accountManagement.sendVerificationEmail(user, true);
           }
         }, error => {
-          console.log('Failed to check if verification email was sent', error);
+          // console.log('Failed to check if verification email was sent', error);
         });
 
     } else {

@@ -48,7 +48,7 @@ function verifyEmail(app, actionCode, nextUrl) {
       );
     }
   }).catch(error => {
-    console.log('Failed to verify account. Try again later.', error)
+    // console.log('Failed to verify account. Try again later.', error)
     return (
       <div>Failed to verify account. Try again later.</div>
     );
