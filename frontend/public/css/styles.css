@@ -1,0 +1,39 @@
+body {
+  min-height: 100vh;
+  height: auto;
+}
+
+#root {
+  background: #004999;
+  min-height: 100vh;
+}
+
+#root > .columns {
+  min-height: 90vh;
+}
+
+#signin-card {
+  border-radius: 5px;
+}
+
+#app-sidebar {
+  background: white;
+}
+
+#app-content {
+  background:#d8d8d8;
+}
+
+#app-content #messages {
+  position: fixed;
+  z-index: 1000;
+}
+
+#app-content #view {
+  height: 100%
+}
+
+#app-content #view #app-form fieldset {
+  margin: 15px;
+  padding: 15px;
+}

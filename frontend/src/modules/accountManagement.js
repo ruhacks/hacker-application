@@ -20,20 +20,20 @@ function sendVerificationEmail(user, initial) {
             verificatonEmailSent: newValue,
           }).then(() => {
             // Update successful.
-            console.log('Updated verification email send field', user);
+            // console.log('Updated verification email send field', user);
           }).catch(error => {
             // An error happened.
-            console.log('Failed to update verification email send field', user);
+            // console.log('Failed to update verification email send field', user);
           });
         } else {
-          console.log('User data cannot  be found');
+          // console.log('User data cannot  be found');
         }
       }, error => {
-        console.log('Failed to get user data', error);
+        // console.log('Failed to get user data', error);
       });
   }).catch(error => {
     // An error happened.
-    console.log('Failed to send verification email', user);
+    // console.log('Failed to send verification email', user);
   });
 }
 

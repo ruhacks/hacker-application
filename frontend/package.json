@@ -2,6 +2,7 @@
   "name": "ruhacksapp",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://hackers.ruhacks.com",
   "dependencies": {
     "eslint": "^4.12.0",
     "eslint-config-prettier": "^2.9.0",
