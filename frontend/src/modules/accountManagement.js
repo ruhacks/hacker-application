@@ -13,11 +13,11 @@ function sendVerificationEmail(user, initial) {
     firebaseApp.database().ref(`users/${user.uid}`).once('value',
       snapshot => {
         if (snapshot) {
-          let newValue = initial ? 1 : ++snapshot.val().verificatonEmailSent;
+          let newValue = initial ? 1 : ++snapshot.val().verificationEmailSent;
 
           firebaseApp.database().ref(`users/${user.uid}`).set({
             ...snapshot.val(),
-            verificatonEmailSent: newValue,
+            verificationEmailSent: newValue,
           }).then(() => {
             // Update successful.
             // console.log('Updated verification email send field', user);

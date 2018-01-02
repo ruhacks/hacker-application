@@ -73,7 +73,7 @@ class Login extends Component {
         firebaseApp.auth().onAuthStateChanged(user => {
             firebaseApp.database().ref(`users/${user.uid}`).set({
               email: user.email,
-              verificatonEmailSent: 0,
+              verificationEmailSent: 0,
             });
           });
       }).catch((error) => {
