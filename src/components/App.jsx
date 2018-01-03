@@ -8,7 +8,7 @@ import Application from './Application';
 import accountManagement from '../modules/accountManagement';
 
 function GetMessages(props) {
-  if (props.app.state.verificationMsgSeen === null) {
+  if (props.app.state.user.verificationMsgSeen === null || !props.app.state.user.verificationMsgSeen) {
     if (!props.app.state.userVerified) {
       return (
         <Bulma.Message info>
@@ -39,6 +39,34 @@ function GetMessages(props) {
           </Bulma.Message>
         );
       }
+    }
+  }
+
+  if (props.app.state.userVerified) {
+    if (!props.app.state.user.applicationComplete) {
+      return (
+        <Bulma.Message info id='form-msg'>
+          <Bulma.Message.Header>
+            <p>Info</p>
+            <Bulma.Delete onClick={() => {document.getElementById('form-msg').setAttribute('style', 'display: none')}} />
+          </Bulma.Message.Header>
+          <Bulma.Message.Body>
+            <Bulma.Content>You still have not yet completed the application. You can access it by the navigation sidebar or clicking <a href='/application' title='RU Hacks Hacker Application'>here</a>.</Bulma.Content>
+          </Bulma.Message.Body>
+        </Bulma.Message>
+      );
+    } else {
+      return (
+        <Bulma.Message info id='form-msg'>
+          <Bulma.Message.Header>
+            <p>Info</p>
+            <Bulma.Delete onClick={() => {document.getElementById('form-msg').setAttribute('style', 'display: none')}} />
+          </Bulma.Message.Header>
+          <Bulma.Message.Body>
+            <Bulma.Content>Awesome you've submitted your application. We will be reviewing applications soon. Please feel free to update your application while you wait to hear back from us.</Bulma.Content>
+          </Bulma.Message.Body>
+        </Bulma.Message>
+      );
     }
   }
 
@@ -99,8 +127,11 @@ class App extends Component {
 
     this.state = {
       userVerified: null,
-      userAccepted: null,
-      verificationMsgSeen: null,
+      user: {
+        accepted: null,
+        verificationMsgSeen: null,
+        applicationComplete: null,
+      },
       activeTab: props.location.pathname === '/app' ? 'dashboard' : props.location.pathname.substr(1, props.location.pathname.length -1)
     };
 
@@ -112,33 +143,59 @@ class App extends Component {
       firebaseApp.database().ref(`users/${user.uid}`).once('value',
         snapshot => {
           if (snapshot) {
-            if (snapshot.verifiedInfoMessageSeen === null && user.emailVerified) {
-              firebaseApp.database().ref(`users/${user.uid}`).set({
-                ...snapshot.val(),
-                verifiedInfoMessageSeen: true,
-              }).then(() => {
-                // Update successful.
-                console.log('Updated verified info message seen field', user);
-              }).catch(error => {
-                // An error happened.
-                console.log('Failed to update verified info message seen field', user);
-              });
+            // ====== Verification Message Seen ======
+            let stateExists = snapshot.val().verificationMsgSeen !== null && snapshot.val().verificationMsgSeen !== undefined;
+
+            if (stateExists) {
+              this.setState({ user: { ...this.state.user, verificationMsgSeen: true } });
             } else if (user.emailVerified) {
-              this.setState({ verificationMsgSeen: true });
+              this.setState({ user: { ...this.state.user, verificationMsgSeen: false } });
             }
 
-            if (document.getElementById('messages')) {
+            // ====== Application Complete ======
+            stateExists = snapshot.val().applicationComplete !== null && snapshot.val().applicationComplete !== undefined;
+
+            if (stateExists) {
+              this.setState({ user: { ...this.state.user, applicationComplete: snapshot.val().applicationComplete } });
+            } else {
+              this.setState({ user: { ...this.state.user, applicationComplete: false } });
+            }
+
+            // ====== Update db ======
+            firebaseApp.database().ref(`users/${user.uid}`).set({
+              ...snapshot.val(),
+              ...this.state.user
+            }).then(() => {
+              // Update successful.
+              // console.log('Updated verified info message seen field', user);
+            }).catch(error => {
+              // An error happened.
+              // console.log('Failed to update verified info message seen field', user);
+            });
+
+            // ====== Show Messages ======
+            if (document.getElementById('dashboard-messages')) {
+              ReactDom.render(<GetMessages app={this} />, document.getElementById('dashboard-messages'));
+            } else if(this.location.pathname === '/app') {
+              const insertMessages = window.setInterval(() => {
+                if (document.getElementById('dashboard-messages')) {
+                  ReactDom.render(<GetMessages app={this} />, document.getElementById('dashboard-messages'));
+                };
+
+                window.clearInterval(insertMessages);
+              }, 500);
+            } else if(document.getElementById('messages')) {
               ReactDom.render(<GetMessages app={this} />, document.getElementById('messages'));
             }
           } else {
-            console.log('User data cannot  be found');
+            // console.log('User data cannot  be found');
           }
         }, error => {
-          console.log('Failed to get user data', error);
+          // console.log('Failed to get user data', error);
         }
       );
 
-      const stopTask = window.setInterval(() => {
+      const insertNav = window.setInterval(() => {
         const placeholder = document.getElementById('panel-placeholder');
 
         if (placeholder) {
@@ -154,7 +211,7 @@ class App extends Component {
             ReactDom.render(<GetView app={this} />, document.getElementById('view'));
           }
 
-          window.clearInterval(stopTask);
+          window.clearInterval(insertNav);
         }
       }, 500);
     });
