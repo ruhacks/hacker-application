@@ -660,18 +660,19 @@ class Application extends Component {
           <fieldset>
             <legend>Do you agree to MLH Code of Conduct? (Can be found <a href='http://static.mlh.io/docs/mlh-code-of-conduct.pdf' title='MLH Code of Conduct' rel='noreferrer noopener' target='_blank'>here</a>)</legend>
 
+            <p class='content'>I agree to the terms of both the MLH <a href='https://github.com/MLH/mlh-policies/blob/master/prize-terms-and-conditions/contest-terms.md' title='MLH Contest Terms'  rel='noreferrer noopener' target='_blank'>Contest Terms and Conditions</a> as well as the MLH <a href='https://github.com/MLH/mlh-policies/blob/master/privacy-policy.md' title='MLH Privacy Policy' rel='noreferrer noopener' target='_blank'>Privacy Policy</a>. Please note that you may receive pre and post-event informational e-mails as well as occasional messages about hackathons from MLH as per the MLH Privacy Policy.</p>
             <div className={`tag is-medium ${this.state.userApplication.mlh ? 'is-success' : 'is-danger'}`} style={{cursor: 'pointer'}}>
               <label htmlFor='agree-to-terms'>
                 <input id='agree-to-terms' type='checkbox' value='yes' name='agree-to-terms' checked={this.state.userApplication.mlh} required
                   onClick={() => this.setState({ userApplication: { ...this.state.userApplication, mlh: !this.state.userApplication.mlh } } )}
-                  cf-questions={'Finally, do you agree with the MLH <a href=\'http://static.mlh.io/docs/mlh-code-of-conduct.pdf\' title=\'MLH Code of Conduct\' rel=\'noreferrer noopener\' target=\'_target\'>Code of Conduct</a>?'}
+                  cf-questions={'Finally, do you agree with the MLH <a href=\'http://static.mlh.io/docs/mlh-code-of-conduct.pdf\' title=\'MLH Code of Conduct\' rel=\'noreferrer noopener\' target=\'_target\'>Code of Conduct</a>; <a href=\'https://github.com/MLH/mlh-policies/blob/master/prize-terms-and-conditions/contest-terms.md\' title=\'MLH Contest Terms\'  rel=\'noreferrer noopener\' target=\'_blank\'>Contest Terms and Conditions</a>; and <a href=\'https://github.com/MLH/mlh-policies/blob/master/privacy-policy.md\' title=\'MLH Privacy Policy\' rel=\'noreferrer noopener\' target=\'_blank\'>Privacy Policy</a>?'}
                   cf-error='Please agree with the Code of Conduct otherwise we cannot proceed.'
                 />
                 Yes
               </label>
               <span
                 onClick={() => this.setState({ userApplication: { ...this.state.userApplication, mlh: !this.state.userApplication.mlh } } )}
-              >, I agree with the <a className='has-text-warning' href='http://static.mlh.io/docs/mlh-code-of-conduct.pdf' title='MLH Code of Conduct' rel='noreferrer noopener' target='_blank'>MLH Code of Conduct</a></span>
+              >, I agree with the MLH <a className='has-text-warning' href='http://static.mlh.io/docs/mlh-code-of-conduct.pdf' title='MLH Code of Conduct' rel='noreferrer noopener' target='_blank'>Code of Conduct</a>; <a className='has-text-warning' href='https://github.com/MLH/mlh-policies/blob/master/prize-terms-and-conditions/contest-terms.md' title='MLH Contest Terms'  rel='noreferrer noopener' target='_blank'>Contest Terms and Conditions</a>; and <a className='has-text-warning' href='https://github.com/MLH/mlh-policies/blob/master/privacy-policy.md' title='MLH Privacy Policy' rel='noreferrer noopener' target='_blank'>Privacy Policy</a></span>
             </div>
           </fieldset>
 
