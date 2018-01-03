@@ -4,8 +4,7 @@ import { firebaseApp } from '../firebase';
 
 function sendVerificationEmail(user, initial) {
   user.sendEmailVerification({
-    //url: 'https://hackers.ruhacks.com/signin?verified=true',
-    url: 'http://ruhacks.com:3000/signin?verified=true',
+    url: 'https://hackers.ruhacks.com/signin?verified=true',
   }).then(() => {
     // Email sent.
     console.log('Sent verification email', user);
@@ -21,9 +20,11 @@ function sendVerificationEmail(user, initial) {
           }).then(() => {
             // Update successful.
             // console.log('Updated verification email send field', user);
+            window.alert('Sent verification email.');
           }).catch(error => {
             // An error happened.
             // console.log('Failed to update verification email send field', user);
+            window.alert('Failed to send verification email. Try again later.');
           });
         } else {
           // console.log('User data cannot  be found');
