@@ -389,8 +389,10 @@ class Application extends Component {
           }
           break;
         case 'object':
-          this.setState({ validInput: { ...this.state.validInput, [input]: 'is-danger' } });
-          endValidation = true;
+          if (Array.isArray(field) && field.length < 1) {
+            this.setState({ validInput: { ...this.state.validInput, [input]: 'is-danger' } });
+            endValidation = true;
+          }
           break;
         default:
           // do nothing
@@ -434,6 +436,19 @@ class Application extends Component {
             );
           }
         }
+
+        firebaseApp.database().ref(`users/${user.uid}`).once('value', snapshot => {
+          if (snapshot) {
+            firebaseApp.database().ref(`users/${user.uid}`).set({
+              ...snapshot.val(),
+              applicationComplete: true,
+            }).then(() => {
+              // success
+            }).catch(error => {
+              // error
+            });
+          }
+        });
       }).catch(error => {
         // An error happened.
         // console.log('Failed to update application info', user);
