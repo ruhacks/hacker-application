@@ -3,6 +3,7 @@ import ReactDom from 'react-dom';
 import { firebaseApp } from '../firebase';
 import * as Bulma from 'reactbulma';
 
+import Dashboard from './Dashboard';
 import Application from './Application';
 import accountManagement from '../modules/accountManagement';
 
@@ -66,8 +67,12 @@ function PanelLink(props) {
 }
 
 function GetView(props) {
-  if (props.app.location.pathname.toLowerCase().indexOf('/application') === 0) {
+  const location = props.app.location.pathname.toLowerCase();
+
+  if (location.indexOf('/application') === 0) {
     return (<Application />);
+  } else if (location.indexOf('/app') === 0) {
+    return (<Dashboard />);
   }
   
   return (null);
