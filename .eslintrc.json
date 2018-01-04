@@ -1,9 +1,12 @@
 {
   "extends": [
+    "prettier",
+    "airbnb-base"
+  ],
+  "plugins": [
     "import",
     "react",
-    "jsx-a11y",
-    "prettier"
+    "jsx-a11y"
   ],
   "env": {
     "browser": true,
@@ -11,7 +14,8 @@
     "node": true
   },
   "parserOptions": {
-    "ecmaVersion": 6,
+    "ecmaVersion": 5,
+    "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true
     }
