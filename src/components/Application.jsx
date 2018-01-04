@@ -49,9 +49,12 @@ function SkillSelection(props) {
         <label htmlFor={`experience-${skill}`} className='checkbox'>
           <input id={`experience-${skill}`} type='checkbox' value={skill} name='experience'
             checked={skills[skill].checked}
-            onChange={(event) => props.app.updateSkillSelect(skill)}
+            onChange={(event) => {
+              props.app.updateSkillSelect(skill);
+              props.app.setState({ validInput: { ...props.app.state.validInput, skills: '' } });
+            }}
           />
-          <span className={`tag is-rounded is-medium ${skills[skill].checked ? 'is-primary' : ''}`}>{skills[skill].label}</span>
+          <span className={`tag is-rounded is-medium ${skills[skill].checked ? 'is-primary' : ''} ${props.app.state.validInput.skills}`}>{skills[skill].label}</span>
         </label>
       </div>
   );
@@ -69,16 +72,16 @@ class Application extends Component {
           first: '',
           last: '',
         },
-        gender: '',
+        gender: 'male',
         education: {
-          status: '',
-          school: '',
+          status: 'in-school',
+          school: 'Acadia University',
           schoolOther: '',
           program: '',
           year: 0,
         },
         location: {
-          country: '',
+          country: 'Canada',
           countryOther: '',
           city: '',
         },
@@ -90,7 +93,7 @@ class Application extends Component {
           resume: ''
         },
         hacking: {
-          level: '',
+          level: 'first hack',
           whyAttend: '',
           creation: '',
         },
@@ -547,11 +550,11 @@ class Application extends Component {
             <legend>Education:</legend>
 
             <fieldset cf-questions='You are doing great {firstname}!&&Alright now for some school related questions.&&Are you currently in school or out of school?|You are doing great {firstname}!&&Now I would like to know a bit about your school background.&&Are you currently in school or out of school?'>
-              <legend className='label'>Education Status:</legend>
+              <legend className='label'>Select your Education Status:</legend>
 
               <div className='field'>
                 <div className='control'>
-                  <label htmlFor='school-status-in' className={`radio ${this.state.validInput['education.status']}`}>
+                  <label htmlFor='school-status-in' className={`radio tag is-medium ${this.state.userApplication.education.status === 'in-school' ? 'is-primary' : ''} ${this.state.validInput['education.status']}`}>
                     <input id='school-status-in' type='radio' value='in-school' name='school-status' checked={this.state.userApplication.education.status === 'in-school'} required
                       onChange={(event) => this.setState({ userApplication: { ...this.state.userApplication, education: { ...this.state.userApplication.education, status: event.target.value } } } )}
                       cf-label='In School'
@@ -559,7 +562,7 @@ class Application extends Component {
                     In School
                   </label>
 
-                  <label htmlFor='school-status-out' className={`radio ${this.state.validInput['education.status']}`}>
+                  <label htmlFor='school-status-out' className={`radio tag is-medium ${this.state.userApplication.education.status === 'out-of-school' ? 'is-primary' : ''} ${this.state.validInput['education.status']}`}>
                     <input id='school-status-out' type='radio' value='out-of-school' name='school-status' checked={this.state.userApplication.education.status === 'out-of-school'} required
                       onChange={(event) => this.setState({ userApplication: { ...this.state.userApplication, education: { ...this.state.userApplication.education, status: event.target.value } } } )}
                       cf-label='Out of School'
@@ -612,7 +615,7 @@ class Application extends Component {
                 <label htmlFor='year' className='label'>Year of study (if in school else 0):</label>
                 <div className='control'>
                   <input id='year' className={`input ${this.state.validInput['education.year']}`} type='number' name='year' min={0} pattern='^[0-9][0-9]*?$' value={this.state.userApplication.education.year}
-                  onChange={(event) => this.setState({ userApplication: { ...this.state.userApplication, education: { ...this.state.userApplication.education, year: event.target.value } } } )}
+                  onChange={(event) => this.setState({ userApplication: { ...this.state.userApplication, education: { ...this.state.userApplication.education, year: parseInt(event.target.value, 10) } } } )}
                   cf-questions='{program} is a really cool program!&&What year are you in right now?|{program} is cool!&&Also, what year are you in?'
                   cf-error={'That is not a valid year of study.|I don\'t recognize that as a valid year of study.'}
                   cf-conditional-school-status='in-school'
