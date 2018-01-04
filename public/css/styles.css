@@ -52,6 +52,8 @@ body {
   display: none;
 }
 
-#app-content #view #app-form label > input[type=checkbox]{
+#app-content #view #app-form label.radio > input[type=radio],
+#app-content #view #app-form label > input[type=checkbox]
+{
   display: none;
 }
