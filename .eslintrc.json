@@ -21,6 +21,7 @@
     }
   },
   "rules": {
+    "comma-dangle": "off",
     "linebreak-style": "off",
     "no-console": "warn"
   }
