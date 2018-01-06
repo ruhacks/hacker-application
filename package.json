@@ -5,7 +5,9 @@
   "homepage": "https://hackers.ruhacks.com",
   "dependencies": {
     "eslint": "^4.12.0",
+    "eslint-config-airbnb": "^16.1.0",
     "eslint-config-prettier": "^2.9.0",
+    "firebase": "~4.8",
     "prettier": "^1.8.2",
     "react": "^16.1.1",
     "react-dom": "^16.2.0",
@@ -25,7 +27,6 @@
   "devDependencies": {
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
-    "eslint-plugin-react": "^7.5.1",
-    "firebase": "~4.8"
+    "eslint-plugin-react": "^7.5.1"
   }
 }
