@@ -360,7 +360,7 @@ class Application extends Component {
   }
 
   validatedInput() {
-    const optional = ['education.schoolOther', 'location.countryOther', 'experience.repo', 'experience.other', 'experience.resume'];
+    const optional = ['education.schoolOther', 'location.countryOther', 'experience.portfolio', 'experience.repo', 'experience.other', 'experience.resume'];
     const inputs = Object.keys(this.state.validInput);
     let endValidation = false;
     let index = 0;
@@ -681,7 +681,7 @@ class Application extends Component {
 
             <div className='columns'>
               <div className='field column is-half'>
-                <label htmlFor='portfolio' className='label'>Portfolio URL:</label>
+                <label htmlFor='portfolio' className='label'>Personal Website URL:</label>
                 <div className='control'>
                   <input id='portfolio' className={`input ${this.state.validInput['experience.portfolio']}`} type='url' name='portfolio'
                     pattern='https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)' placeholder='http:\\foo.baz' required
