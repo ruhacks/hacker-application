@@ -3,6 +3,7 @@ import ReactDom from 'react-dom';
 import { firebaseApp } from '../firebase';
 import * as Bulma from 'reactbulma';
 import FileUploader from 'react-firebase-file-uploader';
+import * as _uuid from 'uuid';
 
 const initialValidInputState = {
   'name.first': '',
@@ -25,7 +26,6 @@ const initialValidInputState = {
   'hacking.whyAttend': '',
   'hacking.creation': '',
   mlh: '',
-  resume: ''
 };
 
 function SchoolList(props) {
@@ -77,6 +77,42 @@ function SkillSelection(props) {
   return skillEl.length > 0 ? skillEl : null;
 }
 
+// ====== Start Deep Merging ======
+
+/**
+ * Simple object check.
+ * @param item
+ * @returns {boolean}
+ */
+function isObject(item) {
+  return (item && typeof item === 'object' && !Array.isArray(item));
+}
+
+/**
+ * Deep merge two objects.
+ * @param target
+ * @param ...sources
+ */
+function mergeDeep(target, ...sources) {
+  if (!sources.length) return target;
+  const source = sources.shift();
+
+  if (isObject(target) && isObject(source)) {
+    for (const key in source) {
+      if (isObject(source[key])) {
+        if (!target[key]) Object.assign(target, { [key]: {} });
+        mergeDeep(target[key], source[key]);
+      } else {
+        Object.assign(target, { [key]: source[key] });
+      }
+    }
+  }
+
+  return mergeDeep(target, ...sources);
+}
+
+// ====== End Deep Merging ======
+
 class Application extends Component {
   constructor(props) {
     super(props);
@@ -105,6 +141,7 @@ class Application extends Component {
           repo: '',
           other: '',
           resume: '',
+          resumeUID: '',
           resumeURL: ''
         },
         hacking: {
@@ -309,7 +346,9 @@ class Application extends Component {
       ],
       isUploading: false,
       progress: 0,
-      validInput: { ...initialValidInputState }
+      resumeBkup: null,
+      validInput: { ...initialValidInputState },
+      unsaved: true,
     };
 
     /*const scripts = ['https://code.jquery.com/jquery-3.2.1.js', 'https://cf-4053.kxcdn.com/conversational-form/0.9.6/conversational-form.min.js',null]
@@ -333,19 +372,102 @@ class Application extends Component {
       }
     });*/
 
-    firebaseApp.auth().onAuthStateChanged(user => {
+    this.handleFilename = (file) => {
+      this.setState({
+        userApplication: {
+          ...this.state.userApplication,
+          experience: {
+            ...this.state.userApplication.experience,
+            resume: file.name,
+          }
+        }
+      });
+
+      return (0, _uuid.v4)();
+    };
+
+    this.handleUploadStart = () => {
+      this.setState({ isUploading: true, progress: 0 });
+    };
+
+    this.handleProgress = (progress) => {
+      this.setState({ progress });
+    };
+
+    this.handleUploadError = (error) => {
+      this.setState({
+        userApplication: {
+          ...this.state.userApplication,
+          experience: {
+            ...this.state.userApplication.experience,
+            resume: this.state.resumeBkup.resume,
+            resumeUID: this.state.resumeBkup.resumeUID,
+            resumeURL: this.state.resumeBkup.resumeURL,
+          }
+        },
+        progress: 0,
+        isUploading: false,
+      });
+      window.alert('Failed to save your resume. Try again later.');
+      // console.error(error);
+    };
+
+    this.handleUploadSuccess = (filename) => {
+      this.setState({
+        userApplication: {
+          ...this.state.userApplication,
+          experience: {
+            ...this.state.userApplication.experience,
+            resumeUID: filename,
+          }
+        },
+        progress: 100,
+        isUploading: false,
+        unsaved: true,
+      });
+
+      const clearProgress = window.setTimeout(() => {
+        this.setState({ progress: 0 });
+        window.clearTimeout(clearProgress);
+      }, 5000);
+
+      firebaseApp
+        .storage()
+        .ref('resumes')
+        .child(filename)
+        .getDownloadURL()
+        .then(url => this.setState({
+          userApplication: {
+            ...this.state.userApplication,
+            experience: {
+              ...this.state.userApplication.experience,
+              resumeURL: url,
+            }
+          }
+        }));
+    };
+
+    firebaseApp.auth().onAuthStateChanged((user) => {
       firebaseApp
         .database()
         .ref(`userApplications/${user.uid}`)
         .once(
           'value',
-          snapshot => {
+          (snapshot) => {
+            this.setState({
+              resumeBkup: {
+                resume: snapshot.val().experience.resume || '',
+                resumeUID: snapshot.val().experience.resumeUID || '',
+                resumeURL: snapshot.val().experience.resumeURL || '',
+              }
+            });
+
             if (snapshot) {
               this.setState({
-                userApplication: { ...this.state.userApplication, ...snapshot.val() }
+                userApplication: mergeDeep(Object.assign({}, this.state.userApplication), snapshot.val())
               });
 
-              this.state.userApplication.skills.forEach(skill => {
+              this.state.userApplication.skills.forEach((skill) => {
                 this.setState({
                   skillSelection: {
                     ...this.state.skillSelection,
@@ -357,12 +479,13 @@ class Application extends Component {
               // console.log('User data cannot  be found');
             }
           },
-          error => {
+          (error) => {
             // console.log('Failed to get user data', error);
           }
         );
     });
   }
+
   updateSkillSelect(value) {
     const index = this.state.userApplication.skills.indexOf(value);
 
@@ -404,7 +527,6 @@ class Application extends Component {
       'experience.portfolio',
       'experience.repo',
       'experience.other',
-      'experience.resume'
     ];
     const inputs = Object.keys(this.state.validInput);
     let endValidation = false;
@@ -453,35 +575,6 @@ class Application extends Component {
     return !endValidation;
   }
 
-  handleUploadStart() {
-    this.setState({ isUploading: true, progress: 0 });
-  }
-  handleProgress(progress) {
-    this.setState({ progress });
-  }
-  handleUploadError(error) {
-    {
-      this.setState({ isUploading: false });
-      console.error(error);
-    }
-  }
-  handleUploadSuccess(filename) {
-    {
-      this.setState(
-        (this.state.userApplication.experience.resume: filename),
-        (this.state.userApplication.progress: 100),
-        (this.state.userApplication.isUploading: false)
-      );
-
-      firebaseApp
-        .storage()
-        .ref('resumes')
-        .child(filename)
-        .getDownloadURL()
-        .then(url => this.setState((this.state.userApplication.experience.resumeURL: url)));
-    }
-  }
-
   submit() {
     if (this.validatedInput()) {
       const user = firebaseApp.auth().currentUser;
@@ -523,6 +616,8 @@ class Application extends Component {
               );
             }
           }
+
+          this.setState({ unsaved: false });
 
           firebaseApp
             .database()
@@ -1138,38 +1233,38 @@ class Application extends Component {
                 </div>
               </div>
 
-              <div className="file has-name column is-half">
+              <div className={`file has-name column is-half is-fullwidth is-primary ${this.state.validInput['experience.resume']}`}>
                 <div className="label">Resume upload (PDF only)</div>
-                <label
-                  htmlFor="resume"
-                  className="file-label"
-                  style={{
-                    backgroundColor: 'steelblue',
-                    color: 'white',
-                    padding: 10,
-                    borderRadius: 4,
-                    pointer: 'cursor'
-                  }}
-                >
+                <label className="file-label">
                   <FileUploader
-                    hidden
-                    accept="pdf/*"
-                    name="Resume"
+                    className="file-input"
+                    accept=".pdf"
+                    name="resume"
+                    filename={this.handleFilename}
                     storageRef={firebaseApp.storage().ref('resumes')}
                     onUploadStart={this.handleUploadStart}
                     onUploadError={this.handleUploadError}
                     onUploadSuccess={this.handleUploadSuccess}
                     onProgress={this.handleProgress}
-                    style={{
-                      backgroundColor: 'steelblue',
-                      color: 'white',
-                      padding: 10,
-                      borderRadius: 4
-                    }}
+                  />
+                  <span className="file-cta">
+                    <span className="file-icon">
+                      <i className="fa fa-upload"></i>
+                    </span>
+                    <span className="file-label">
+                      {this.state.userApplication.experience.resume || 'Choose a file…'}
+                    </span>
+                  </span>
+                  <progress
+                    className="progress is-success file-name"
+                    style={{ height: '2.25rem' }}
+                    value={this.state.progress}
+                    max={100}
                   >
-                    Upload your Awesome Resume!
-                  </FileUploader>
+                  </progress>
                 </label>
+
+                
               </div>
             </div>
           </fieldset>
