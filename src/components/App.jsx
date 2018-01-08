@@ -98,9 +98,9 @@ function GetView(props) {
   const location = props.app.location.pathname.toLowerCase();
 
   if (location.indexOf('/application') === 0) {
-    return (<Application />);
+    return (<Application app={props.app} />);
   } else if (location.indexOf('/app') === 0) {
-    return (<Dashboard />);
+    return (<Dashboard app={props.app} />);
   }
   
   return (null);
