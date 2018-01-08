@@ -454,15 +454,16 @@ class Application extends Component {
         .once(
           'value',
           (snapshot) => {
-            this.setState({
-              resumeBkup: {
-                resume: snapshot.val().experience.resume || '',
-                resumeUID: snapshot.val().experience.resumeUID || '',
-                resumeURL: snapshot.val().experience.resumeURL || '',
-              }
-            });
+            
+            if (snapshot.val()) {
+              this.setState({
+                resumeBkup: {
+                  resume: snapshot.val().experience.resume || '',
+                  resumeUID: snapshot.val().experience.resumeUID || '',
+                  resumeURL: snapshot.val().experience.resumeURL || '',
+                }
+              });
 
-            if (snapshot) {
               this.setState({
                 userApplication: mergeDeep(Object.assign({}, this.state.userApplication), snapshot.val())
               });
