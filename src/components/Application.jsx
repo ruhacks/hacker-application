@@ -122,7 +122,7 @@ class Application extends Component {
         },
         'graphic-design': {
           checked: false,
-          label: 'Grahpic Design'
+          label: 'Graphic Design'
         },
         'full-stack': {
           checked: false,
