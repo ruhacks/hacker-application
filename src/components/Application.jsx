@@ -1131,7 +1131,7 @@ class Application extends Component {
             <div className="columns">
               <div className="field column is-half">
                 <label htmlFor="portfolio" className="label">
-                  Personal Website URL:
+                  Personal Website URL (Optional):
                 </label>
                 <div className="control">
                   <input
