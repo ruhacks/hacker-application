@@ -138,13 +138,13 @@ class App extends Component {
     this.location = props.location;
 
     firebaseApp.auth().onAuthStateChanged((user) => {
-      this.setState({ userVerified: user && user.emailVerified });
+      this.setState({ userVerified: true /* user && user.emailVerified */ });
 
       firebaseApp.database().ref(`users/${user.uid}`).once('value',
         snapshot => {
           if (snapshot) {
             // ====== Verification Message Seen ======
-            let stateExists = snapshot.val().verificationMsgSeen !== null && snapshot.val().verificationMsgSeen !== undefined;
+            let stateExists = true; // snapshot.val().verificationMsgSeen !== null && snapshot.val().verificationMsgSeen !== undefined;
 
             if (stateExists) {
               this.setState({ user: { ...this.state.user, verificationMsgSeen: true } });
