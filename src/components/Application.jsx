@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import ReactDom from 'react-dom';
-import { firebaseApp } from '../firebase';
-import * as Bulma from 'reactbulma';
-import FileUploader from 'react-firebase-file-uploader';
-import * as _uuid from 'uuid';
+import React, { Component } from 'react'
+import ReactDom from 'react-dom'
+import { firebaseApp } from '../firebase'
+import * as Bulma from 'reactbulma'
+import FileUploader from 'react-firebase-file-uploader'
+import * as _uuid from 'uuid'
 
 const initialValidInputState = {
   'name.first': '',
@@ -26,40 +26,40 @@ const initialValidInputState = {
   'hacking.whyAttend': '',
   'hacking.creation': '',
   mlh: '',
-};
+}
 
-function SchoolList(props) {
-  const schools = props.app.state.schools;
-  const schoolEl = [];
+function SchoolList (props) {
+  const schools = props.app.state.schools
+  const schoolEl = []
 
   schools.forEach((school, index) => {
     schoolEl.push(
       <option value={school} cf-label={school} key={index}>
         {school}
       </option>
-    );
-  });
+    )
+  })
 
-  return schoolEl.length > 0 ? schoolEl : null;
+  return schoolEl.length > 0 ? schoolEl : null
 }
 
-function SkillSelection(props) {
-  const skills = props.app.state.skillSelection;
-  const skillEl = [];
+function SkillSelection (props) {
+  const skills = props.app.state.skillSelection
+  const skillEl = []
 
   Object.keys(skills).forEach((skill, index) => {
     skillEl.push(
-      <div className="control" key={index}>
-        <label htmlFor={`experience-${skill}`} className="checkbox">
+      <div className='control' key={index}>
+        <label htmlFor={`experience-${skill}`} className='checkbox'>
           <input
             id={`experience-${skill}`}
-            type="checkbox"
+            type='checkbox'
             value={skill}
-            name="experience"
+            name='experience'
             checked={skills[skill].checked}
             onChange={event => {
-              props.app.updateSkillSelect(skill);
-              props.app.setState({ validInput: { ...props.app.state.validInput, skills: '' } });
+              props.app.updateSkillSelect(skill)
+              props.app.setState({ validInput: { ...props.app.state.validInput, skills: '' } })
             }}
           />
           <span
@@ -71,10 +71,10 @@ function SkillSelection(props) {
           </span>
         </label>
       </div>
-    );
-  });
+    )
+  })
 
-  return skillEl.length > 0 ? skillEl : null;
+  return skillEl.length > 0 ? skillEl : null
 }
 
 // ====== Start Deep Merging ======
@@ -84,8 +84,8 @@ function SkillSelection(props) {
  * @param item
  * @returns {boolean}
  */
-function isObject(item) {
-  return (item && typeof item === 'object' && !Array.isArray(item));
+function isObject (item) {
+  return (item && typeof item === 'object' && !Array.isArray(item))
 }
 
 /**
@@ -93,29 +93,29 @@ function isObject(item) {
  * @param target
  * @param ...sources
  */
-function mergeDeep(target, ...sources) {
-  if (!sources.length) return target;
-  const source = sources.shift();
+function mergeDeep (target, ...sources) {
+  if (!sources.length) return target
+  const source = sources.shift()
 
   if (isObject(target) && isObject(source)) {
     for (const key in source) {
       if (isObject(source[key])) {
-        if (!target[key]) Object.assign(target, { [key]: {} });
-        mergeDeep(target[key], source[key]);
+        if (!target[key]) Object.assign(target, { [key]: {} })
+        mergeDeep(target[key], source[key])
       } else {
-        Object.assign(target, { [key]: source[key] });
+        Object.assign(target, { [key]: source[key] })
       }
     }
   }
 
-  return mergeDeep(target, ...sources);
+  return mergeDeep(target, ...sources)
 }
 
 // ====== End Deep Merging ======
 
 class Application extends Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
     this.state = {
       userApplication: {
         name: {
@@ -349,9 +349,9 @@ class Application extends Component {
       resumeBkup: null,
       validInput: { ...initialValidInputState },
       unsaved: true,
-    };
+    }
 
-    /*const scripts = ['https://code.jquery.com/jquery-3.2.1.js', 'https://cf-4053.kxcdn.com/conversational-form/0.9.6/conversational-form.min.js',null]
+    /* const scripts = ['https://code.jquery.com/jquery-3.2.1.js', 'https://cf-4053.kxcdn.com/conversational-form/0.9.6/conversational-form.min.js',null]
 
     scripts.forEach(link => {
       const script = document.createElement('script');
@@ -370,7 +370,7 @@ class Application extends Component {
           document.body.appendChild(script);
         }, 50);
       }
-    });*/
+    }); */
 
     this.handleFilename = (file) => {
       this.setState({
@@ -381,18 +381,18 @@ class Application extends Component {
             resume: file.name,
           }
         }
-      });
+      })
 
-      return (0, _uuid.v4)();
-    };
+      return (0, _uuid.v4)()
+    }
 
     this.handleUploadStart = () => {
-      this.setState({ isUploading: true, progress: 0 });
-    };
+      this.setState({ isUploading: true, progress: 0 })
+    }
 
     this.handleProgress = (progress) => {
-      this.setState({ progress });
-    };
+      this.setState({ progress })
+    }
 
     this.handleUploadError = (error) => {
       this.setState({
@@ -407,10 +407,10 @@ class Application extends Component {
         },
         progress: 0,
         isUploading: false,
-      });
-      window.alert('Failed to save your resume. Try again later.');
+      })
+      window.alert('Failed to save your resume. Try again later.')
       // console.error(error);
-    };
+    }
 
     this.handleUploadSuccess = (filename) => {
       this.setState({
@@ -424,12 +424,12 @@ class Application extends Component {
         progress: 100,
         isUploading: false,
         unsaved: true,
-      });
+      })
 
       const clearProgress = window.setTimeout(() => {
-        this.setState({ progress: 0 });
-        window.clearTimeout(clearProgress);
-      }, 5000);
+        this.setState({ progress: 0 })
+        window.clearTimeout(clearProgress)
+      }, 5000)
 
       firebaseApp
         .storage()
@@ -444,8 +444,8 @@ class Application extends Component {
               resumeURL: url,
             }
           }
-        }));
-    };
+        }))
+    }
 
     firebaseApp.auth().onAuthStateChanged((user) => {
       firebaseApp
@@ -454,7 +454,6 @@ class Application extends Component {
         .once(
           'value',
           (snapshot) => {
-            
             if (snapshot.val()) {
               this.setState({
                 resumeBkup: {
@@ -462,11 +461,11 @@ class Application extends Component {
                   resumeUID: snapshot.val().experience.resumeUID || '',
                   resumeURL: snapshot.val().experience.resumeURL || '',
                 }
-              });
+              })
 
               this.setState({
                 userApplication: mergeDeep(Object.assign({}, this.state.userApplication), snapshot.val())
-              });
+              })
 
               this.state.userApplication.skills.forEach((skill) => {
                 this.setState({
@@ -474,8 +473,8 @@ class Application extends Component {
                     ...this.state.skillSelection,
                     [skill]: { ...this.state.skillSelection[skill], checked: true }
                   }
-                });
-              });
+                })
+              })
             } else {
               // console.log('User data cannot  be found');
             }
@@ -483,102 +482,102 @@ class Application extends Component {
           (error) => {
             // console.log('Failed to get user data', error);
           }
-        );
-    });
+        )
+    })
   }
 
-  updateSkillSelect(value) {
-    const index = this.state.userApplication.skills.indexOf(value);
+  updateSkillSelect (value) {
+    const index = this.state.userApplication.skills.indexOf(value)
 
     if (this.state.skillSelection[value].checked) {
-      this.state.userApplication.skills.splice(index, 1);
+      this.state.userApplication.skills.splice(index, 1)
 
       this.setState({
         skillSelection: {
           ...this.state.skillSelection,
           [value]: { ...this.state.skillSelection[value], checked: false }
         }
-      });
+      })
     } else {
-      this.state.userApplication.skills.push(value);
+      this.state.userApplication.skills.push(value)
 
       this.setState({
         skillSelection: {
           ...this.state.skillSelection,
           [value]: { ...this.state.skillSelection[value], checked: true }
         }
-      });
+      })
     }
   }
 
-  resetErrors() {
+  resetErrors () {
     Object.keys(this.state.validInput).forEach(input => {
       if (this.state.validInput[input].trim() !== '') {
-        delete this.state.validInput[input];
+        delete this.state.validInput[input]
       }
-    });
+    })
 
-    this.setState({ validInput: { ...initialValidInputState } });
+    this.setState({ validInput: { ...initialValidInputState } })
   }
 
-  validatedInput() {
+  validatedInput () {
     const optional = [
       'education.schoolOther',
       'location.countryOther',
       'experience.portfolio',
       'experience.repo',
       'experience.other',
-    ];
-    const inputs = Object.keys(this.state.validInput);
-    let endValidation = false;
-    let index = 0;
-    let input = inputs[index];
+    ]
+    const inputs = Object.keys(this.state.validInput)
+    let endValidation = false
+    let index = 0
+    let input = inputs[index]
 
-    this.resetErrors();
+    this.resetErrors()
 
     while (index < inputs.length && !endValidation) {
-      let path = input.split('.');
-      let field = this.state.userApplication;
+      let path = input.split('.')
+      let field = this.state.userApplication
 
       path.forEach(part => {
-        field = field[part];
-      });
+        field = field[part]
+      })
 
       switch ((typeof field).toLowerCase()) {
         case 'boolean':
           if (field === false && input === 'mlh') {
-            this.setState({ validInput: { ...this.state.validInput, [input]: 'is-danger' } });
-            endValidation = true;
+            this.setState({ validInput: { ...this.state.validInput, [input]: 'is-danger' } })
+            endValidation = true
           }
-          break;
+          break
         case 'number':
-          break;
+          break
         case 'string':
           if (field.trim() === '' && optional.indexOf(input) < 0) {
-            this.setState({ validInput: { ...this.state.validInput, [input]: 'is-danger' } });
-            endValidation = true;
+            this.setState({ validInput: { ...this.state.validInput, [input]: 'is-danger' } })
+            endValidation = true
           }
-          break;
+          break
         case 'object':
           if (Array.isArray(field) && field.length < 1) {
-            this.setState({ validInput: { ...this.state.validInput, [input]: 'is-danger' } });
-            endValidation = true;
+            this.setState({ validInput: { ...this.state.validInput, [input]: 'is-danger' } })
+            endValidation = true
           }
-          break;
+          break
         default:
           // do nothing
-          break;
+          break
       }
 
-      input = inputs[++index];
+      input = inputs[++index]
     }
 
-    return !endValidation;
+    return !endValidation
   }
 
-  submit() {
+  submit () {
     if (this.validatedInput()) {
-      const user = firebaseApp.auth().currentUser;
+      const user = firebaseApp.auth().currentUser
 
       firebaseApp
         .database()
@@ -590,22 +589,22 @@ class Application extends Component {
           // Update successful.
           // console.log('Updated application info', user);
 
-          const messages = document.getElementById('messages');
-          const successMsg = document.getElementById('form-success-msg');
+          const messages = document.getElementById('messages')
+          const successMsg = document.getElementById('form-success-msg')
 
           if (messages) {
             if (successMsg) {
-              successMsg.setAttribute('style', 'display: block');
+              successMsg.setAttribute('style', 'display: block')
             } else {
               ReactDom.render(
-                <Bulma.Message success id="form-success-msg">
+                <Bulma.Message success id='form-success-msg'>
                   <Bulma.Message.Header>
                     <p>Info</p>
                     <Bulma.Delete
                       onClick={() => {
                         document
                           .getElementById('form-success-msg')
-                          .setAttribute('style', 'display: none');
+                          .setAttribute('style', 'display: none')
                       }}
                     />
                   </Bulma.Message.Header>
@@ -614,11 +613,11 @@ class Application extends Component {
                   </Bulma.Message.Body>
                 </Bulma.Message>,
                 document.getElementById('messages')
-              );
+              )
             }
           }
 
-          this.setState({ unsaved: false });
+          this.setState({ unsaved: false })
 
           firebaseApp
             .database()
@@ -637,30 +636,30 @@ class Application extends Component {
                   })
                   .catch(error => {
                     // error
-                  });
+                  })
               }
-            });
+            })
         })
         .catch(error => {
           // An error happened.
           // console.log('Failed to update application info', user);
 
-          const messages = document.getElementById('messages');
-          const errorMsg = document.getElementById('form-error-msg');
+          const messages = document.getElementById('messages')
+          const errorMsg = document.getElementById('form-error-msg')
 
           if (messages) {
             if (errorMsg) {
-              errorMsg.setAttribute('style', 'display: block');
+              errorMsg.setAttribute('style', 'display: block')
             } else {
               ReactDom.render(
-                <Bulma.Message danger id="form-error-msg">
+                <Bulma.Message danger id='form-error-msg'>
                   <Bulma.Message.Header>
                     <p>Error</p>
                     <Bulma.Delete
                       onClick={() => {
                         document
                           .getElementById('form-error-msg')
-                          .setAttribute('style', 'display: none');
+                          .setAttribute('style', 'display: none')
                       }}
                     />
                   </Bulma.Message.Header>
@@ -671,27 +670,27 @@ class Application extends Component {
                   </Bulma.Message.Body>
                 </Bulma.Message>,
                 document.getElementById('messages')
-              );
+              )
             }
           }
-        });
+        })
     } else {
-      const messages = document.getElementById('messages');
-      const errorMsg = document.getElementById('form-validation-error-msg');
+      const messages = document.getElementById('messages')
+      const errorMsg = document.getElementById('form-validation-error-msg')
 
       if (messages) {
         if (errorMsg) {
-          errorMsg.setAttribute('style', 'display: block');
+          errorMsg.setAttribute('style', 'display: block')
         } else {
           ReactDom.render(
-            <Bulma.Message danger id="form-validation-error-msg">
+            <Bulma.Message danger id='form-validation-error-msg'>
               <Bulma.Message.Header>
                 <p>Error</p>
                 <Bulma.Delete
                   onClick={() => {
                     document
                       .getElementById('form-validation-error-msg')
-                      .setAttribute('style', 'display: none');
+                      .setAttribute('style', 'display: none')
                   }}
                 />
               </Bulma.Message.Header>
@@ -703,30 +702,30 @@ class Application extends Component {
               </Bulma.Message.Body>
             </Bulma.Message>,
             document.getElementById('messages')
-          );
+          )
         }
       }
     }
   }
 
-  render() {
+  render () {
     return (
       <div>
-        <div id="messages" />
-        <form id="app-form" className="js-form">
-          <div className="columns">
-            <div className="field column is-half">
-              <label htmlFor="firstname" className="label">
+        <div id='messages' />
+        <form id='app-form' className='js-form'>
+          <div className='columns'>
+            <div className='field column is-half'>
+              <label htmlFor='firstname' className='label'>
                 First Name:
               </label>
-              <div className="control">
+              <div className='control'>
                 <input
-                  id="firstname"
+                  id='firstname'
                   className={`input ${this.state.validInput['name.first']}`}
-                  type="text"
-                  name="firstname"
+                  type='text'
+                  name='firstname'
                   value={this.state.userApplication.name.first}
-                  placeholder="Foo"
+                  placeholder='Foo'
                   required
                   onChange={event =>
                     this.setState({
@@ -736,23 +735,23 @@ class Application extends Component {
                       }
                     })
                   }
-                  cf-questions="Hi there!&&What is your first name?|Looking to sign up?&&I can help you with that!&&What is your first name?"
+                  cf-questions='Hi there!&&What is your first name?|Looking to sign up?&&I can help you with that!&&What is your first name?'
                 />
               </div>
             </div>
 
-            <div className="field column is-half">
-              <label htmlFor="lastname" className="label">
+            <div className='field column is-half'>
+              <label htmlFor='lastname' className='label'>
                 Last Name:
               </label>
-              <div className="control">
+              <div className='control'>
                 <input
-                  id="lastname"
+                  id='lastname'
                   className={`input ${this.state.validInput['name.last']}`}
-                  type="text"
-                  name="lastname"
+                  type='text'
+                  name='lastname'
                   value={this.state.userApplication.name.last}
-                  placeholder="Baz"
+                  placeholder='Baz'
                   required
                   onChange={event =>
                     this.setState({
@@ -762,21 +761,21 @@ class Application extends Component {
                       }
                     })
                   }
-                  cf-questions="Thanks for that {firstname}!&&Also, may I get your last name?|{firstname}, what is your last name?"
+                  cf-questions='Thanks for that {firstname}!&&Also, may I get your last name?|{firstname}, what is your last name?'
                 />
               </div>
             </div>
           </div>
 
-          <div className="field">
-            <label htmlFor="gender" className="label">
+          <div className='field'>
+            <label htmlFor='gender' className='label'>
               Gender:
             </label>
-            <div className="control">
+            <div className='control'>
               <div className={`select ${this.state.validInput.gender}`}>
                 <select
-                  id="gender"
-                  name="gender"
+                  id='gender'
+                  name='gender'
                   value={this.state.userApplication.gender}
                   required
                   onChange={event =>
@@ -788,13 +787,13 @@ class Application extends Component {
                     "I hope this isn't too personal, but can you tell me your gender?&&If you wish not to say you can just choose other."
                   }
                 >
-                  <option value="male" cf-label="Male">
+                  <option value='male' cf-label='Male'>
                     Male
                   </option>
-                  <option value="female" cf-label="Female">
+                  <option value='female' cf-label='Female'>
                     Female
                   </option>
-                  <option value="other" cf-label="Other">
+                  <option value='other' cf-label='Other'>
                     Other
                   </option>
                 </select>
@@ -805,13 +804,13 @@ class Application extends Component {
           <fieldset>
             <legend>Education:</legend>
 
-            <fieldset cf-questions="You are doing great {firstname}!&&Alright now for some school related questions.&&Are you currently in school or out of school?|You are doing great {firstname}!&&Now I would like to know a bit about your school background.&&Are you currently in school or out of school?">
-              <legend className="label">Select your Education Status:</legend>
+            <fieldset cf-questions='You are doing great {firstname}!&&Alright now for some school related questions.&&Are you currently in school or out of school?|You are doing great {firstname}!&&Now I would like to know a bit about your school background.&&Are you currently in school or out of school?'>
+              <legend className='label'>Select your Education Status:</legend>
 
-              <div className="field">
-                <div className="control">
+              <div className='field'>
+                <div className='control'>
                   <label
-                    htmlFor="school-status-in"
+                    htmlFor='school-status-in'
                     className={`radio tag is-medium ${
                       this.state.userApplication.education.status === 'in-school'
                         ? 'is-primary'
@@ -819,10 +818,10 @@ class Application extends Component {
                     } ${this.state.validInput['education.status']}`}
                   >
                     <input
-                      id="school-status-in"
-                      type="radio"
-                      value="in-school"
-                      name="school-status"
+                      id='school-status-in'
+                      type='radio'
+                      value='in-school'
+                      name='school-status'
                       checked={this.state.userApplication.education.status === 'in-school'}
                       required
                       onChange={event =>
@@ -836,13 +835,13 @@ class Application extends Component {
                           }
                         })
                       }
-                      cf-label="In School"
+                      cf-label='In School'
                     />
                     In School
                   </label>
 
                   <label
-                    htmlFor="school-status-out"
+                    htmlFor='school-status-out'
                     className={`radio tag is-medium ${
                       this.state.userApplication.education.status === 'out-of-school'
                         ? 'is-primary'
@@ -850,10 +849,10 @@ class Application extends Component {
                     } ${this.state.validInput['education.status']}`}
                   >
                     <input
-                      id="school-status-out"
-                      type="radio"
-                      value="out-of-school"
-                      name="school-status"
+                      id='school-status-out'
+                      type='radio'
+                      value='out-of-school'
+                      name='school-status'
                       checked={this.state.userApplication.education.status === 'out-of-school'}
                       required
                       onChange={event =>
@@ -867,7 +866,7 @@ class Application extends Component {
                           }
                         })
                       }
-                      cf-label="Out of School"
+                      cf-label='Out of School'
                     />
                     Out of School
                   </label>
@@ -875,18 +874,18 @@ class Application extends Component {
               </div>
             </fieldset>
 
-            <div className="columns">
-              <div className="field column is-half">
-                <label htmlFor="school-name" className="label">
+            <div className='columns'>
+              <div className='field column is-half'>
+                <label htmlFor='school-name' className='label'>
                   Select your School:
                 </label>
-                <div className="control">
+                <div className='control'>
                   <div
                     className={`select is-fullwidth ${this.state.validInput['education.school']}`}
                   >
                     <select
-                      id="school-name"
-                      name="school-name"
+                      id='school-name'
+                      name='school-name'
                       value={this.state.userApplication.education.school}
                       required
                       onChange={event =>
@@ -910,17 +909,18 @@ class Application extends Component {
                 </div>
               </div>
 
-              <div className="field column is-half">
-                <label htmlFor="school-name-other" className="label">
+              <div className='field column is-half'>
+                <label htmlFor='school-name-other' className='label'>
                   School (if not listed):
                 </label>
-                <div className="control">
+                <div className='control'>
                   <input
-                    id="school-name-other"
+                    id='school-name-other'
                     className={`input ${this.state.validInput['education.schoolOther']}`}
-                    type="text"
-                    name="school-name-other"
+                    type='text'
+                    name='school-name-other'
                     value={this.state.userApplication.education.schoolOther}
+                    placeholder='Select other in School first'
                     onChange={event =>
                       this.setState({
                         userApplication: {
@@ -935,23 +935,23 @@ class Application extends Component {
                     cf-questions={
                       "Ah I see that you have selected 'Other'.&&What is the name of the school you attend or have attended?"
                     }
-                    cf-conditional-school-name="Other"
+                    cf-conditional-school-name='Other'
                   />
                 </div>
               </div>
             </div>
 
-            <div className="columns">
-              <div className="field column is-half">
-                <label htmlFor="program" className="label">
+            <div className='columns'>
+              <div className='field column is-half'>
+                <label htmlFor='program' className='label'>
                   Program name:
                 </label>
-                <div className="control">
+                <div className='control'>
                   <input
-                    id="program"
+                    id='program'
                     className={`input ${this.state.validInput['education.program']}`}
-                    type="text"
-                    name="program"
+                    type='text'
+                    name='program'
                     value={this.state.userApplication.education.program}
                     placeholder={"If you are in highschool, put 'Highschool Diploma'."}
                     required
@@ -973,18 +973,18 @@ class Application extends Component {
                 </div>
               </div>
 
-              <div className="field column is-half">
-                <label htmlFor="year" className="label">
+              <div className='field column is-half'>
+                <label htmlFor='year' className='label'>
                   Year of study (if in school else 0):
                 </label>
-                <div className="control">
+                <div className='control'>
                   <input
-                    id="year"
+                    id='year'
                     className={`input ${this.state.validInput['education.year']}`}
-                    type="number"
-                    name="year"
+                    type='number'
+                    name='year'
                     min={0}
-                    pattern="^[0-9][0-9]*?$"
+                    pattern='^[0-9][0-9]*?$'
                     value={this.state.userApplication.education.year}
                     onChange={event =>
                       this.setState({
@@ -997,11 +997,11 @@ class Application extends Component {
                         }
                       })
                     }
-                    cf-questions="{program} is a really cool program!&&What year are you in right now?|{program} is cool!&&Also, what year are you in?"
+                    cf-questions='{program} is a really cool program!&&What year are you in right now?|{program} is cool!&&Also, what year are you in?'
                     cf-error={
                       "That is not a valid year of study.|I don't recognize that as a valid year of study."
                     }
-                    cf-conditional-school-status="in-school"
+                    cf-conditional-school-status='in-school'
                   />
                 </div>
               </div>
@@ -1011,18 +1011,18 @@ class Application extends Component {
           <fieldset>
             <legend>Location:</legend>
 
-            <div className="columns">
-              <div className="field column is-one-third">
-                <label htmlFor="country" className="label">
+            <div className='columns'>
+              <div className='field column is-one-third'>
+                <label htmlFor='country' className='label'>
                   Select your Country:
                 </label>
-                <div className="control">
+                <div className='control'>
                   <div
                     className={`select is-fullwidth ${this.state.validInput['location.country']}`}
                   >
                     <select
-                      id="country"
-                      name="country"
+                      id='country'
+                      name='country'
                       value={this.state.userApplication.location.country}
                       required
                       onChange={event =>
@@ -1040,13 +1040,13 @@ class Application extends Component {
                         "Okay {firstname}, what country are you located?&&If you are outside of Canada or United States please select 'Other'."
                       }
                     >
-                      <option value="Canada" cf-label="Canada">
+                      <option value='Canada' cf-label='Canada'>
                         Canada
                       </option>
-                      <option value="United States" cf-label="United States">
+                      <option value='United States' cf-label='United States'>
                         United States
                       </option>
-                      <option value="Other" cf-label="Other">
+                      <option value='Other' cf-label='Other'>
                         Other
                       </option>
                     </select>
@@ -1054,17 +1054,18 @@ class Application extends Component {
                 </div>
               </div>
 
-              <div className="field column is-one-third">
-                <label htmlFor="country-other" className="label">
+              <div className='field column is-one-third'>
+                <label htmlFor='country-other' className='label'>
                   Country (if not listed):
                 </label>
-                <div className="control">
+                <div className='control'>
                   <input
-                    id="country-other"
+                    id='country-other'
                     className={`input ${this.state.validInput['location.countryOther']}`}
-                    type="text"
-                    name="country-other"
+                    type='text'
+                    name='country-other'
                     value={this.state.userApplication.location.countryOther}
+                    placeholder='Select other in Country first'
                     onChange={event =>
                       this.setState({
                         userApplication: {
@@ -1076,24 +1077,24 @@ class Application extends Component {
                         }
                       })
                     }
-                    cf-questions="Okay, so you are located outside of Canada and the United States.&&That is cool!&&Which country do you reside in?"
-                    cf-conditional-country="Other"
+                    cf-questions='Okay, so you are located outside of Canada and the United States.&&That is cool!&&Which country do you reside in?'
+                    cf-conditional-country='Other'
                   />
                 </div>
               </div>
 
-              <div className="field column is-one-third">
-                <label htmlFor="city" className="label">
+              <div className='field column is-one-third'>
+                <label htmlFor='city' className='label'>
                   Enter your City:
                 </label>
-                <div className="control">
+                <div className='control'>
                   <input
-                    id="city"
+                    id='city'
                     className={`input ${this.state.validInput['location.city']}`}
-                    type="text"
-                    name="city"
+                    type='text'
+                    name='city'
                     value={this.state.userApplication.location.city}
-                    placeholder="Toronto"
+                    placeholder='Toronto'
                     required
                     onChange={event =>
                       this.setState({
@@ -1106,7 +1107,7 @@ class Application extends Component {
                         }
                       })
                     }
-                    cf-questions="And your city?|Which city are you in {firstname}?"
+                    cf-questions='And your city?|Which city are you in {firstname}?'
                   />
                 </div>
               </div>
@@ -1121,26 +1122,26 @@ class Application extends Component {
                 "{city} sounds like a nice place to live.&&So {firstname}, what relevant tech experience do you have up your sleeve?&&For clarifcation of UX vs. UI vs. IA vs. IxD please refer to this <a href='https://tristaljing.wordpress.com/2017/09/14/ux-vs-ui-vs-ia-vs-ixd-4-confusing-digital-design-terms-defined' title='UX vs UI vs IA vs IxD : 4 Confusing Digital Design Terms Defined' rel='noreferrer noopener' target='_blank'>article</a>|{city} sounds like a nice place to live.&&What are some experience that you are great at?&&For clarifcation of UX vs. UI vs. IA vs. IxD please refer to this <a href='https://tristaljing.wordpress.com/2017/09/14/ux-vs-ui-vs-ia-vs-ixd-4-confusing-digital-design-terms-defined' title='UX vs UI vs IA vs IxD : 4 Confusing Digital Design Terms Defined' rel='noreferrer noopener' target='_blank'>article</a>"
               }
             >
-              <legend className="label">Select your areas of experience:</legend>
+              <legend className='label'>Select your areas of experience:</legend>
 
-              <div className="field is-grouped is-grouped-multiline tag-selection">
+              <div className='field is-grouped is-grouped-multiline tag-selection'>
                 <SkillSelection app={this} />
               </div>
             </fieldset>
 
-            <div className="columns">
-              <div className="field column is-half">
-                <label htmlFor="portfolio" className="label">
+            <div className='columns'>
+              <div className='field column is-half'>
+                <label htmlFor='portfolio' className='label'>
                   Personal Website URL (Optional):
                 </label>
-                <div className="control">
+                <div className='control'>
                   <input
-                    id="portfolio"
+                    id='portfolio'
                     className={`input ${this.state.validInput['experience.portfolio']}`}
-                    type="url"
-                    name="portfolio"
-                    pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)"
-                    placeholder="http:\\foo.baz"
+                    type='url'
+                    name='portfolio'
+                    pattern='https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)'
+                    placeholder='http:\\foo.baz'
                     required
                     value={this.state.userApplication.experience.portfolio}
                     onChange={event =>
@@ -1164,18 +1165,18 @@ class Application extends Component {
                 </div>
               </div>
 
-              <div className="field column is-half">
-                <label htmlFor="repo" className="label">
+              <div className='field column is-half'>
+                <label htmlFor='repo' className='label'>
                   Repository URL (Optional):
                 </label>
-                <div className="control">
+                <div className='control'>
                   <input
-                    id="repo"
+                    id='repo'
                     className={`input ${this.state.validInput['experience.repo']}`}
-                    type="url"
-                    name="repo"
-                    pattern="(null)|(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*))"
-                    placeholder="http:\\foo.baz"
+                    type='url'
+                    name='repo'
+                    pattern='(null)|(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*))'
+                    placeholder='http:\\foo.baz'
                     value={this.state.userApplication.experience.repo}
                     onChange={event =>
                       this.setState({
@@ -1199,19 +1200,19 @@ class Application extends Component {
               </div>
             </div>
 
-            <div className="columns">
-              <div className="field column is-half">
-                <label htmlFor="other" className="label">
+            <div className='columns'>
+              <div className='field column is-half'>
+                <label htmlFor='other' className='label'>
                   Other URL (Optional):
                 </label>
-                <div className="control">
+                <div className='control'>
                   <input
-                    id="other"
+                    id='other'
                     className={`input ${this.state.validInput['experience.other']}`}
-                    type="url"
-                    name="other"
-                    pattern="(null)|(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*))"
-                    placeholder="http:\\foo.baz"
+                    type='url'
+                    name='other'
+                    pattern='(null)|(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*))'
+                    placeholder='http:\\foo.baz'
                     value={this.state.userApplication.experience.other}
                     onChange={event =>
                       this.setState({
@@ -1235,12 +1236,12 @@ class Application extends Component {
               </div>
 
               <div className={`file has-name column is-half is-fullwidth is-primary ${this.state.validInput['experience.resume']}`}>
-                <div className="label">Resume upload (PDF only)</div>
-                <label className="file-label">
+                <div className='label'>Resume upload (PDF only)</div>
+                <label className='file-label'>
                   <FileUploader
-                    className="file-input"
-                    accept=".pdf"
-                    name="resume"
+                    className='file-input'
+                    accept='.pdf'
+                    name='resume'
                     filename={this.handleFilename}
                     storageRef={firebaseApp.storage().ref('resumes')}
                     onUploadStart={this.handleUploadStart}
@@ -1248,24 +1249,22 @@ class Application extends Component {
                     onUploadSuccess={this.handleUploadSuccess}
                     onProgress={this.handleProgress}
                   />
-                  <span className="file-cta">
-                    <span className="file-icon">
-                      <i className="fa fa-upload"></i>
+                  <span className='file-cta'>
+                    <span className='file-icon'>
+                      <i className='fa fa-upload' />
                     </span>
-                    <span className="file-label">
+                    <span className='file-label'>
                       {this.state.userApplication.experience.resume || 'Choose a file…'}
                     </span>
                   </span>
                   <progress
-                    className="progress is-success file-name"
+                    className='progress is-success file-name'
                     style={{ height: '2.25rem' }}
                     value={this.state.progress}
                     max={100}
-                  >
-                  </progress>
+                  />
                 </label>
 
-                
               </div>
             </div>
           </fieldset>
@@ -1273,15 +1272,15 @@ class Application extends Component {
           <fieldset>
             <legend>Hacking Background:</legend>
 
-            <div className="field">
-              <label htmlFor="experience-level" className="label">
+            <div className='field'>
+              <label htmlFor='experience-level' className='label'>
                 Level of Experience:
               </label>
-              <div className="control">
+              <div className='control'>
                 <div className={`select ${this.state.validInput['hacking.level']}`}>
                   <select
-                    id="experience-level"
-                    name="experience-level"
+                    id='experience-level'
+                    name='experience-level'
                     value={this.state.userApplication.hacking.level}
                     required
                     onChange={event =>
@@ -1295,15 +1294,15 @@ class Application extends Component {
                         }
                       })
                     }
-                    cf-questions="How experienced are you with hackathons?|Have you been to many hackathons or is this going to be your first time?|Have you ever experienced a hackathon?"
+                    cf-questions='How experienced are you with hackathons?|Have you been to many hackathons or is this going to be your first time?|Have you ever experienced a hackathon?'
                   >
-                    <option value="first hack" cf-label="This is my first hackathon">
+                    <option value='first hack' cf-label='This is my first hackathon'>
                       This is my first hackathon
                     </option>
-                    <option value="few hacks" cf-label="I have been to one/some before">
+                    <option value='few hacks' cf-label='I have been to one/some before'>
                       I have been to one/some before
                     </option>
-                    <option value="many hacks" cf-label="I am a hackathon veteran">
+                    <option value='many hacks' cf-label='I am a hackathon veteran'>
                       I am a hackathon veteran
                     </option>
                   </select>
@@ -1311,15 +1310,15 @@ class Application extends Component {
               </div>
             </div>
 
-            <div className="field">
-              <label htmlFor="why-attend" className="label">
+            <div className='field'>
+              <label htmlFor='why-attend' className='label'>
                 Why do you want to attend RU Hacks?
               </label>
-              <div className="control">
+              <div className='control'>
                 <textarea
-                  id="why-attend"
+                  id='why-attend'
                   className={`textarea ${this.state.validInput['hacking.whyAttend']}`}
-                  name="why-attend"
+                  name='why-attend'
                   value={this.state.userApplication.hacking.whyAttend}
                   required
                   onChange={event =>
@@ -1333,21 +1332,21 @@ class Application extends Component {
                       }
                     })
                   }
-                  cf-questions="{firstname} it is time for some longer questions.&&First off, why do you want to attend RU Hacks?"
-                  cf-error="We would be interested in hearing your reason so please share. :D"
+                  cf-questions='{firstname} it is time for some longer questions.&&First off, why do you want to attend RU Hacks?'
+                  cf-error='We would be interested in hearing your reason so please share. :D'
                 />
               </div>
             </div>
 
-            <div className="field">
-              <label htmlFor="creation-proud-of" className="label">
+            <div className='field'>
+              <label htmlFor='creation-proud-of' className='label'>
                 What is something you have worked on that you are most proud of?
               </label>
-              <div className="control">
+              <div className='control'>
                 <textarea
-                  id="creation-proud-of"
+                  id='creation-proud-of'
                   className={`textarea ${this.state.validInput['hacking.creation']}`}
-                  name="creation-proud-of"
+                  name='creation-proud-of'
                   value={this.state.userApplication.hacking.creation}
                   required
                   onChange={event =>
@@ -1361,8 +1360,8 @@ class Application extends Component {
                       }
                     })
                   }
-                  cf-questions="Sounds awesome!&&Now what is something that you created that you are most proud of?|That sounds good.&&Now can you tell me about something you created that you are proud of?"
-                  cf-error="Please! It would let us get to know you better. :)"
+                  cf-questions='Sounds awesome!&&Now what is something that you created that you are most proud of?|That sounds good.&&Now can you tell me about something you created that you are proud of?'
+                  cf-error='Please! It would let us get to know you better. :)'
                 />
               </div>
             </div>
@@ -1372,32 +1371,32 @@ class Application extends Component {
             <legend>
               Do you agree to MLH Code of Conduct? (Can be found{' '}
               <a
-                href="http://static.mlh.io/docs/mlh-code-of-conduct.pdf"
-                title="MLH Code of Conduct"
-                rel="noreferrer noopener"
-                target="_blank"
+                href='http://static.mlh.io/docs/mlh-code-of-conduct.pdf'
+                title='MLH Code of Conduct'
+                rel='noreferrer noopener'
+                target='_blank'
               >
                 here
               </a>)
             </legend>
 
-            <p className="content">
+            <p className='content'>
               <strong>
                 I agree to the terms of both the MLH{' '}
                 <a
-                  href="https://github.com/MLH/mlh-policies/blob/master/prize-terms-and-conditions/contest-terms.md"
-                  title="MLH Contest Terms"
-                  rel="noreferrer noopener"
-                  target="_blank"
+                  href='https://github.com/MLH/mlh-policies/blob/master/prize-terms-and-conditions/contest-terms.md'
+                  title='MLH Contest Terms'
+                  rel='noreferrer noopener'
+                  target='_blank'
                 >
                   Contest Terms and Conditions
                 </a>{' '}
                 as well as the MLH{' '}
                 <a
-                  href="https://github.com/MLH/mlh-policies/blob/master/privacy-policy.md"
-                  title="MLH Privacy Policy"
-                  rel="noreferrer noopener"
-                  target="_blank"
+                  href='https://github.com/MLH/mlh-policies/blob/master/privacy-policy.md'
+                  title='MLH Privacy Policy'
+                  rel='noreferrer noopener'
+                  target='_blank'
                 >
                   Privacy Policy
                 </a>. Please note that you may receive pre and post-event informational e-mails as
@@ -1410,12 +1409,12 @@ class Application extends Component {
               }`}
               style={{ cursor: 'pointer' }}
             >
-              <label htmlFor="agree-to-terms">
+              <label htmlFor='agree-to-terms'>
                 <input
-                  id="agree-to-terms"
-                  type="checkbox"
-                  value="yes"
-                  name="agree-to-terms"
+                  id='agree-to-terms'
+                  type='checkbox'
+                  value='yes'
+                  name='agree-to-terms'
                   checked={this.state.userApplication.mlh}
                   required
                   onClick={() =>
@@ -1429,7 +1428,7 @@ class Application extends Component {
                   cf-questions={
                     "Finally, do you agree with the MLH <a href='http://static.mlh.io/docs/mlh-code-of-conduct.pdf' title='MLH Code of Conduct' rel='noreferrer noopener' target='_target'>Code of Conduct</a>; <a href='https://github.com/MLH/mlh-policies/blob/master/prize-terms-and-conditions/contest-terms.md' title='MLH Contest Terms'  rel='noreferrer noopener' target='_blank'>Contest Terms and Conditions</a>; and <a href='https://github.com/MLH/mlh-policies/blob/master/privacy-policy.md' title='MLH Privacy Policy' rel='noreferrer noopener' target='_blank'>Privacy Policy</a>?"
                   }
-                  cf-error="Please agree with the Code of Conduct otherwise we cannot proceed."
+                  cf-error='Please agree with the Code of Conduct otherwise we cannot proceed.'
                 />
                 Yes
               </label>
@@ -1445,29 +1444,29 @@ class Application extends Component {
               >
                 , I agree with the MLH{' '}
                 <a
-                  className="has-text-warning"
-                  href="http://static.mlh.io/docs/mlh-code-of-conduct.pdf"
-                  title="MLH Code of Conduct"
-                  rel="noreferrer noopener"
-                  target="_blank"
+                  className='has-text-warning'
+                  href='http://static.mlh.io/docs/mlh-code-of-conduct.pdf'
+                  title='MLH Code of Conduct'
+                  rel='noreferrer noopener'
+                  target='_blank'
                 >
                   Code of Conduct
                 </a>;{' '}
                 <a
-                  className="has-text-warning"
-                  href="https://github.com/MLH/mlh-policies/blob/master/prize-terms-and-conditions/contest-terms.md"
-                  title="MLH Contest Terms"
-                  rel="noreferrer noopener"
-                  target="_blank"
+                  className='has-text-warning'
+                  href='https://github.com/MLH/mlh-policies/blob/master/prize-terms-and-conditions/contest-terms.md'
+                  title='MLH Contest Terms'
+                  rel='noreferrer noopener'
+                  target='_blank'
                 >
                   Contest Terms and Conditions
                 </a>; and{' '}
                 <a
-                  className="has-text-warning"
-                  href="https://github.com/MLH/mlh-policies/blob/master/privacy-policy.md"
-                  title="MLH Privacy Policy"
-                  rel="noreferrer noopener"
-                  target="_blank"
+                  className='has-text-warning'
+                  href='https://github.com/MLH/mlh-policies/blob/master/privacy-policy.md'
+                  title='MLH Privacy Policy'
+                  rel='noreferrer noopener'
+                  target='_blank'
                 >
                   Privacy Policy
                 </a>
@@ -1476,22 +1475,22 @@ class Application extends Component {
           </fieldset>
 
           <Bulma.Button
-            className="button is-link"
+            className='button is-link'
             onClick={event => {
-              event.preventDefault();
-              this.submit();
+              event.preventDefault()
+              this.submit()
             }}
           >
             Save Application
           </Bulma.Button>
 
-          {/*<input id='submit' type='text' value='bye' name='submit' pattern='^bye$' cf-questions={'Thanks for your info.&&We will contact you soon!&&Enter in \'bye\' to finish sign up.'}
+          {/* <input id='submit' type='text' value='bye' name='submit' pattern='^bye$' cf-questions={'Thanks for your info.&&We will contact you soon!&&Enter in \'bye\' to finish sign up.'}
             onChange={event => console.log(event)}
-          />*/}
+          /> */}
         </form>
       </div>
-    );
+    )
   }
 }
 
-export default Application;
+export default Application
