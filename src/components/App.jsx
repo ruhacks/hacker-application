@@ -261,10 +261,9 @@ class App extends Component {
               </Bulma.Button>
             </Bulma.Panel.Block>
           </Bulma.Panel>
-          <Bulma.Content id='dashboard-messages' />
+          <Bulma.Content id='messages' />
         </div>
         <div id='app-content' className='column'>
-          <div id='messages' />
           <div id='view' className='box' />
         </div>
       </div>

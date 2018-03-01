@@ -24,6 +24,7 @@ class Dashboard extends Component {
           </Bulma.Hero.Body>
           <Bulma.Hero.Foot />
         </Bulma.Hero>
+        <Bulma.Content id='dashboard-messages' />
       </div>
     )
   }
