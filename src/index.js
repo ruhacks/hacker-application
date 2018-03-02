@@ -26,7 +26,8 @@ firebaseApp.auth().onAuthStateChanged((user) => {
       // console.log('User signed in', user);
     }
 
-    if (window.location.pathname.indexOf('/app') !== 0) {
+    let routes = ['/app', '/application', '/invitation']
+    if (routes.indexOf(window.location.pathname) < 0) {
       browserHistory.push('/app')
     }
   } else {

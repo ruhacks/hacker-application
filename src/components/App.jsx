@@ -107,6 +107,8 @@ function GetView (props) {
     return (<Application app={props.app} />)
   } else if (location.indexOf('/app') === 0) {
     return (<Dashboard app={props.app} />)
+  } else if (location.indexOf('/invitation') === 0) {
+    return (<Invitation app={props.app} />)
   }
 
   return (null)
@@ -118,9 +120,9 @@ function showNavLinks (props) {
   if (props.userVerified) {
     links.push(<PanelLink link='/application' icon='file-text-o' title='Application' label='Application' className={props.activeTab === 'application' ? 'is-active' : ''} key='0' />)
 
-    if (props.userAccepted) {
-      links.push(<PanelLink link='' icon='check-square' title='Confirmation' label='Confirmation' className={props.activeTab === 'confirmation' ? 'is-active' : ''} key='1' />)
-      links.push(<PanelLink link='' icon='users' title='Team' label='Team' className={props.activeTab === 'team' ? 'is-active' : ''} key='2' />)
+    if (props.user.accepted) {
+      links.push(<PanelLink link='/invitation' icon='check-square' title='Invitation' label='Invitation' className={props.activeTab === 'invitation' ? 'is-active' : ''} key='1' />)
+      // links.push(<PanelLink link='' icon='users' title='Team' label='Team' className={props.activeTab === 'team' ? 'is-active' : ''} key='2' />)
     }
   }
 
@@ -167,6 +169,15 @@ class App extends Component {
               this.setState({ user: { ...this.state.user, applicationComplete: false } })
             }
 
+            // ====== Invitated ======
+            stateExists = snapshot.val().accepted !== null && snapshot.val().accepted !== undefined
+
+            if (stateExists) {
+              this.setState({ user: { ...this.state.user, accepted: snapshot.val().accepted } })
+            } else {
+              this.setState({ user: { ...this.state.user, accepted: false } })
+            }
+
             // ====== Update db ======
             firebaseApp.database().ref(`users/${user.uid}`).set({
               ...snapshot.val(),
@@ -208,7 +219,7 @@ class App extends Component {
           ReactDom.render(showNavLinks(this.state), placeholder) // render the elements into placeholder first
 
           // insert the elements into their right place
-          placeholder.childNodes.forEach((node) => {
+          Array.from(placeholder.childNodes).forEach((node) => {
             document.getElementById('app-sidebar').insertBefore(node, placeholder)
           })
           placeholder.remove() // remove placeholder container
@@ -249,19 +260,21 @@ class App extends Component {
     return (
       <div className='columns'>
         <div className='column is-one-fifth'>
-          <Bulma.Panel id='app-sidebar'>
-            <Bulma.Panel.Heading>Navigation</Bulma.Panel.Heading>
-            <PanelLink link='/app' icon='tachometer' title='Dashboard' label='Dashboard' className={this.state.activeTab === 'dashboard' ? 'is-active' : ''} />
-            <div id='panel-placeholder' />
-            <PanelLink link='https://2018.ruhacks.com/#FAQ' icon='question-circle-o' title='FAQ' label='FAQ' external />
-            <PanelLink link='mailto:hackers@ruhacks.com' icon='envelope-o' title='Contact Us' label='Contact Us' external />
-            <Bulma.Panel.Block>
-              <Bulma.Button className='button is-link is-outlined is-fullwidth' onClick={() => this.signOut()}>
-                Sign out
-              </Bulma.Button>
-            </Bulma.Panel.Block>
-          </Bulma.Panel>
-          <Bulma.Content id='messages' />
+          <div id='sticky-sidebar'>
+            <Bulma.Panel id='app-sidebar'>
+              <Bulma.Panel.Heading>Navigation</Bulma.Panel.Heading>
+              <PanelLink link='/app' icon='tachometer' title='Dashboard' label='Dashboard' className={this.state.activeTab === 'dashboard' ? 'is-active' : ''} />
+              <div id='panel-placeholder' />
+              <PanelLink link='https://2018.ruhacks.com/#FAQ' icon='question-circle-o' title='FAQ' label='FAQ' external />
+              <PanelLink link='mailto:hackers@ruhacks.com' icon='envelope-o' title='Contact Us' label='Contact Us' external />
+              <Bulma.Panel.Block>
+                <Bulma.Button className='button is-link is-outlined is-fullwidth' onClick={() => this.signOut()}>
+                  Sign out
+                </Bulma.Button>
+              </Bulma.Panel.Block>
+            </Bulma.Panel>
+            <Bulma.Content id='messages' />
+          </div>
         </div>
         <div id='app-content' className='column'>
           <div id='view' className='box' />
