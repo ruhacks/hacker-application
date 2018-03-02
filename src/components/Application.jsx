@@ -1407,7 +1407,15 @@ class Application extends Component {
               className={`tag is-medium ${
                 this.state.userApplication.mlh ? 'is-success' : 'is-danger'
               }`}
-              style={{ cursor: 'pointer' }}
+              onClick={() =>
+                this.setState({
+                  userApplication: {
+                    ...this.state.userApplication,
+                    mlh: !this.state.userApplication.mlh
+                  }
+                })
+              }
+              style={{ cursor: 'pointer', display: 'block', height: 'auto', padding: '1em', whiteSpace: 'normal' }}
             >
               <label htmlFor='agree-to-terms'>
                 <input
@@ -1417,60 +1425,40 @@ class Application extends Component {
                   name='agree-to-terms'
                   checked={this.state.userApplication.mlh}
                   required
-                  onClick={() =>
-                    this.setState({
-                      userApplication: {
-                        ...this.state.userApplication,
-                        mlh: !this.state.userApplication.mlh
-                      }
-                    })
-                  }
                   cf-questions={
                     "Finally, do you agree with the MLH <a href='http://static.mlh.io/docs/mlh-code-of-conduct.pdf' title='MLH Code of Conduct' rel='noreferrer noopener' target='_target'>Code of Conduct</a>; <a href='https://github.com/MLH/mlh-policies/blob/master/prize-terms-and-conditions/contest-terms.md' title='MLH Contest Terms'  rel='noreferrer noopener' target='_blank'>Contest Terms and Conditions</a>; and <a href='https://github.com/MLH/mlh-policies/blob/master/privacy-policy.md' title='MLH Privacy Policy' rel='noreferrer noopener' target='_blank'>Privacy Policy</a>?"
                   }
                   cf-error='Please agree with the Code of Conduct otherwise we cannot proceed.'
                 />
                 Yes
-              </label>
-              <span
-                onClick={() =>
-                  this.setState({
-                    userApplication: {
-                      ...this.state.userApplication,
-                      mlh: !this.state.userApplication.mlh
-                    }
-                  })
-                }
+              </label>, I agree with the MLH{' '}
+              <a
+                className='has-text-warning'
+                href='http://static.mlh.io/docs/mlh-code-of-conduct.pdf'
+                title='MLH Code of Conduct'
+                rel='noreferrer noopener'
+                target='_blank'
               >
-                , I agree with the MLH{' '}
-                <a
-                  className='has-text-warning'
-                  href='http://static.mlh.io/docs/mlh-code-of-conduct.pdf'
-                  title='MLH Code of Conduct'
-                  rel='noreferrer noopener'
-                  target='_blank'
-                >
-                  Code of Conduct
-                </a>;{' '}
-                <a
-                  className='has-text-warning'
-                  href='https://github.com/MLH/mlh-policies/blob/master/prize-terms-and-conditions/contest-terms.md'
-                  title='MLH Contest Terms'
-                  rel='noreferrer noopener'
-                  target='_blank'
-                >
-                  Contest Terms and Conditions
-                </a>; and{' '}
-                <a
-                  className='has-text-warning'
-                  href='https://github.com/MLH/mlh-policies/blob/master/privacy-policy.md'
-                  title='MLH Privacy Policy'
-                  rel='noreferrer noopener'
-                  target='_blank'
-                >
-                  Privacy Policy
-                </a>
-              </span>
+                Code of Conduct
+              </a>;{' '}
+              <a
+                className='has-text-warning'
+                href='https://github.com/MLH/mlh-policies/blob/master/prize-terms-and-conditions/contest-terms.md'
+                title='MLH Contest Terms'
+                rel='noreferrer noopener'
+                target='_blank'
+              >
+                Contest Terms and Conditions
+              </a>; and{' '}
+              <a
+                className='has-text-warning'
+                href='https://github.com/MLH/mlh-policies/blob/master/privacy-policy.md'
+                title='MLH Privacy Policy'
+                rel='noreferrer noopener'
+                target='_blank'
+              >
+                Privacy Policy
+              </a>
             </div>
           </fieldset>
 
