@@ -5,7 +5,6 @@ import * as Bulma from 'reactbulma'
 
 import Dashboard from './Dashboard'
 import Application from './Application'
-import Invitation from './Invitation'
 import accountManagement from '../modules/accountManagement'
 
 function GetMessages (props) {

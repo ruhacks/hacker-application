@@ -39,7 +39,6 @@ ReactDom.render(
   <Router path='/' history={browserHistory}>
     <Route path='/app' component={App} />
     <Route path='/application' component={App} />
-    <Route path='/invitation' component={App} />
     <Route path='/login' component={Login} />
   </Router>,
   document.getElementById('root')
