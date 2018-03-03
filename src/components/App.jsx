@@ -274,7 +274,7 @@ class App extends Component {
             <Bulma.Content id='messages' />
           </div>
         </div>
-        <div id='app-content' className='column'>
+        <div id='app-content' className='column is-four-fifths'>
           <div id='view' className='box' />
         </div>
       </div>
