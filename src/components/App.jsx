@@ -107,8 +107,6 @@ function GetView (props) {
     return (<Application app={props.app} />)
   } else if (location.indexOf('/app') === 0) {
     return (<Dashboard app={props.app} />)
-  } else if (location.indexOf('/invitation') === 0) {
-    return (<Invitation app={props.app} />)
   }
 
   return (null)
@@ -121,7 +119,7 @@ function showNavLinks (props) {
     links.push(<PanelLink link='/application' icon='file-text-o' title='Application' label='Application' className={props.activeTab === 'application' ? 'is-active' : ''} key='0' />)
 
     if (props.user.accepted) {
-      links.push(<PanelLink link='/invitation' icon='check-square' title='Invitation' label='Invitation' className={props.activeTab === 'invitation' ? 'is-active' : ''} key='1' />)
+      // links.push(<PanelLink link='/invitation' icon='check-square' title='Invitation' label='Invitation' className={props.activeTab === 'invitation' ? 'is-active' : ''} key='1' />)
       // links.push(<PanelLink link='' icon='users' title='Team' label='Team' className={props.activeTab === 'team' ? 'is-active' : ''} key='2' />)
     }
   }
