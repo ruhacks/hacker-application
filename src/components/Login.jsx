@@ -55,6 +55,8 @@ class Login extends Component {
       },
       isLogin: this.props.router.isActive('/login'),
       isRegister: this.props.router.isActive('/register'),
+      isForgotPassword: this.props.router.isActive('/forgotPassword'),
+      isProcessing: false
     }
   }
 
@@ -65,6 +67,7 @@ class Login extends Component {
       .signInWithEmailAndPassword(email, password)
       .catch((error) => {
         this.setState({ error, props: checkError(error) })
+        this.setState({isProcesing: false})
       })
   }
 
@@ -85,10 +88,26 @@ class Login extends Component {
               verificationEmailSent: 0,
             })
           })
+
+          this.setState({isProcesing: false})
         }).catch((error) => {
           this.setState({ error, props: checkError(error) })
+          this.setState({isProcesing: false})
         })
     }
+  }
+
+  forgotPassword () {
+    const { email } = this.state
+
+    firebaseApp.auth().sendPasswordResetEmail(email)
+      .then(() => {
+        window.alert('Email sent. Check your inbox.')
+        this.setState({isProcesing: false})
+      }).catch((error) => {
+        this.setState({ error, props: checkError(error) })
+        this.setState({isProcesing: false})
+      })
   }
 
   render () {
@@ -137,7 +156,7 @@ class Login extends Component {
                     {this.state.props.email.error}
                   </p>
                 </Bulma.Field>
-                <Bulma.Field>
+                <Bulma.Field style={{display: (this.state.isForgotPassword ? 'none' : 'block')}}>
                   <label htmlFor='signin-password' className='label'>Password</label>
                   <Bulma.Control className='has-icons-left has-icons-right'>
                     <Bulma.Input
@@ -207,22 +226,33 @@ class Login extends Component {
                 <Bulma.Control>
                   <Bulma.Button
                     className='is-link'
-                    style={{display: (this.state.isLogin ? 'block' : 'none')}}
                     type='button'
-                    onClick={() => this.signIn()}
-                  >
-                    Login
-                  </Bulma.Button>
-                </Bulma.Control>
+                    onClick={() => {
+                      this.setState({isProcesing: true})
 
-                <Bulma.Control>
-                  <Bulma.Button
-                    className='is-link'
-                    style={{display: (this.state.isRegister ? 'block' : 'none')}}
-                    type='button'
-                    onClick={() => this.signUp()}
+                      if (this.state.isForgotPassword) {
+                        this.forgotPassword()
+                      } else if (this.state.isRegister) {
+                        this.signUp()
+                      } else {
+                        this.signIn()
+                      }
+                    }}
                   >
-                    Register
+                    <i className={`fa ${
+                      this.state.isProcesing ? 'fa-refresh fa-spin' : 'fa-arrow-circle-right'
+                    }`} />
+                    <span style={{marginLeft: '0.5em'}}>
+                      {
+                        this.state.isForgotPassword
+                          ? 'Send forgot password email'
+                          : (
+                            this.state.isRegister
+                              ? 'Register'
+                              : 'Login'
+                          )
+                      }
+                    </span>
                   </Bulma.Button>
                 </Bulma.Control>
               </form>
@@ -231,7 +261,10 @@ class Login extends Component {
 
               <Bulma.Content style={{marginTop: '1em'}}>
                 <a
-                  style={{display: (this.state.isLogin ? 'none' : 'block')}}
+                  style={{
+                    display: (this.state.isLogin ? 'none' : 'block'),
+                    marginBottom: '0.5em'
+                  }}
                   href='/login'
                   title='Login'
                 >
@@ -248,7 +281,13 @@ class Login extends Component {
                   >
                     Register
                   </a>
-                  {/* <a href='/forgotPassword' title='Forgot Password?'>Forgot Password?</a> */}
+                  <a
+                    style={{display: (this.state.isForgotPassword ? 'none' : 'block')}}
+                    href='/forgotPassword'
+                    title='Forgot Password'
+                  >
+                    Forgot Password
+                  </a>
                 </div>
               </Bulma.Content>
             </Bulma.Card.Content>
