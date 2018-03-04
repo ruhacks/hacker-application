@@ -1,7 +1,7 @@
 {
   "extends": [
-    "prettier",
-    "airbnb-base"
+    "standard",
+    "standard-react"
   ],
   "plugins": [
     "import",
