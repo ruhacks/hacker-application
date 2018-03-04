@@ -118,7 +118,15 @@ class Login extends Component {
           <Bulma.Card id='signin-card'>
             <Bulma.Card.Header>
               <Bulma.Card.Header.Title>
-                {this.state.isLogin ? 'Login' : 'Register'}
+                {
+                  this.state.isForgotPassword
+                    ? 'Forgot Password'
+                    : (
+                      this.state.isRegister
+                        ? 'Register'
+                        : 'Login'
+                    )
+                }
               </Bulma.Card.Header.Title>
             </Bulma.Card.Header>
             <Bulma.Card.Content>
