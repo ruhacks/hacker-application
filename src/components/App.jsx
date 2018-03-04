@@ -5,6 +5,7 @@ import * as Bulma from 'reactbulma'
 
 import Dashboard from './Dashboard'
 import Application from './Application'
+import Invitation from './Invitation'
 import accountManagement from '../modules/accountManagement'
 
 function GetMessages (props) {
@@ -59,6 +60,20 @@ function GetMessages (props) {
           </Bulma.Message.Body>
         </Bulma.Message>
       )
+    } else if (props.app.state.user.accepted) {
+      return (
+        <Bulma.Message info id='form-msg'>
+          <Bulma.Message.Header>
+            <p>Success</p>
+            <Bulma.Delete onClick={() => {
+              document.getElementById('form-msg').setAttribute('style', 'display: none')
+            }} />
+          </Bulma.Message.Header>
+          <Bulma.Message.Body>
+            <Bulma.Content>You've been invited to come to RU Hacks! You can access it by the navigation sidebar or clicking <a href='/invitation' title='RU Hacks Hacker Invitation'>here</a>.</Bulma.Content>
+          </Bulma.Message.Body>
+        </Bulma.Message>
+      )
     } else {
       return (
         <Bulma.Message info id='form-msg'>
@@ -107,6 +122,8 @@ function GetView (props) {
     return (<Application app={props.app} />)
   } else if (location.indexOf('/app') === 0) {
     return (<Dashboard app={props.app} />)
+  } else if (location.indexOf('/invitation') === 0) {
+    return (<Invitation app={props.app} />)
   }
 
   return (null)
@@ -119,7 +136,7 @@ function showNavLinks (props) {
     links.push(<PanelLink link='/application' icon='file-text-o' title='Application' label='Application' className={props.activeTab === 'application' ? 'is-active' : ''} key='0' />)
 
     if (props.user.accepted) {
-      // links.push(<PanelLink link='/invitation' icon='check-square' title='Invitation' label='Invitation' className={props.activeTab === 'invitation' ? 'is-active' : ''} key='1' />)
+      links.push(<PanelLink link='/invitation' icon='check-square' title='Invitation' label='Invitation' className={props.activeTab === 'invitation' ? 'is-active' : ''} key='1' />)
       // links.push(<PanelLink link='' icon='users' title='Team' label='Team' className={props.activeTab === 'team' ? 'is-active' : ''} key='2' />)
     }
   }
@@ -149,43 +166,47 @@ class App extends Component {
       firebaseApp.database().ref(`users/${user.uid}`).once('value',
         snapshot => {
           if (snapshot) {
+            const updates = Object.assign({}, this.state)
+
             // ====== Verification Message Seen ======
             let stateExists = true // snapshot.val().verificationMsgSeen !== null && snapshot.val().verificationMsgSeen !== undefined;
 
             if (stateExists) {
-              this.setState({ user: { ...this.state.user, verificationMsgSeen: true } })
+              updates.user.verificationMsgSeen = true
             } else if (user.emailVerified) {
-              this.setState({ user: { ...this.state.user, verificationMsgSeen: false } })
+              updates.user.verificationMsgSeen = false
             }
 
             // ====== Application Complete ======
             stateExists = snapshot.val().applicationComplete !== null && snapshot.val().applicationComplete !== undefined
 
             if (stateExists) {
-              this.setState({ user: { ...this.state.user, applicationComplete: snapshot.val().applicationComplete } })
+              updates.user.applicationComplete = snapshot.val().applicationComplete
             } else {
-              this.setState({ user: { ...this.state.user, applicationComplete: false } })
+              updates.user.applicationComplete = false
             }
 
             // ====== Invitated ======
             stateExists = snapshot.val().accepted !== null && snapshot.val().accepted !== undefined
 
             if (stateExists) {
-              this.setState({ user: { ...this.state.user, accepted: snapshot.val().accepted } })
+              updates.user.accepted = snapshot.val().accepted
             } else {
-              this.setState({ user: { ...this.state.user, accepted: false } })
+              updates.user.accepted = false
             }
 
-            // ====== Update db ======
-            firebaseApp.database().ref(`users/${user.uid}`).set({
-              ...snapshot.val(),
-              ...this.state.user
-            }).then(() => {
-              // Update successful.
-              // console.log('Updated verified info message seen field', user);
-            }).catch(error => {
-              // An error happened.
-              // console.log('Failed to update verified info message seen field', user);
+            this.setState({ user: { ...this.state.user, ...updates.user } }, () => {
+              // ====== Update db ======
+              firebaseApp.database().ref(`users/${user.uid}`).set({
+                ...snapshot.val(),
+                ...updates.user
+              }).then(() => {
+                // Update successful.
+                // console.log('Updated verified info message seen field', user);
+              }).catch(error => {
+                // An error happened.
+                // console.log('Failed to update verified info message seen field', user);
+              })
             })
 
             // ====== Show Messages ======
