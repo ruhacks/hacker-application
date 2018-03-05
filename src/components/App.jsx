@@ -5,7 +5,6 @@ import * as Bulma from 'reactbulma'
 
 import Dashboard from './Dashboard'
 import Application from './Application'
-import Invitation from './Invitation'
 import accountManagement from '../modules/accountManagement'
 
 function GetMessages (props) {
@@ -14,7 +13,7 @@ function GetMessages (props) {
       return (
         <Bulma.Message info>
           <Bulma.Message.Header>
-            <p style={{margin: 0}}>Info</p>
+            <p>Info</p>
           </Bulma.Message.Header>
           <Bulma.Message.Body>
             <Bulma.Content>Please verify your account by checking your email inbox. Also, check in your junk/spam box if you cannot find it in your inbox.</Bulma.Content>
@@ -31,7 +30,7 @@ function GetMessages (props) {
         return (
           <Bulma.Message info id='form-msg'>
             <Bulma.Message.Header>
-              <p style={{margin: 0}}>Info</p>
+              <p>Info</p>
               <Bulma.Delete onClick={() => {
                 document.getElementById('form-msg').setAttribute('style', 'display: none')
               }} />
@@ -50,7 +49,7 @@ function GetMessages (props) {
       return (
         <Bulma.Message info id='form-msg'>
           <Bulma.Message.Header>
-            <p style={{margin: 0}}>Info</p>
+            <p>Info</p>
             <Bulma.Delete onClick={() => {
               document.getElementById('form-msg').setAttribute('style', 'display: none')
             }} />
@@ -60,39 +59,11 @@ function GetMessages (props) {
           </Bulma.Message.Body>
         </Bulma.Message>
       )
-    } else if (props.app.state.user.accepted) {
-      return (
-        <Bulma.Message success id='form-msg'>
-          <Bulma.Message.Header>
-            <p style={{margin: 0}}>Success</p>
-            <Bulma.Delete onClick={() => {
-              document.getElementById('form-msg').setAttribute('style', 'display: none')
-            }} />
-          </Bulma.Message.Header>
-          <Bulma.Message.Body>
-            <Bulma.Content>You've been invited to come to RU Hacks! You can access it by the navigation sidebar or clicking <a href='/invitation' title='RU Hacks Hacker Invitation'>here</a>.</Bulma.Content>
-          </Bulma.Message.Body>
-        </Bulma.Message>
-      )
-    } else if (props.app.state.user.invitationComplete) {
-      return (
-        <Bulma.Message success id='form-msg'>
-          <Bulma.Message.Header>
-            <p style={{margin: 0}}>Success</p>
-            <Bulma.Delete onClick={() => {
-              document.getElementById('form-msg').setAttribute('style', 'display: none')
-            }} />
-          </Bulma.Message.Header>
-          <Bulma.Message.Body>
-            <Bulma.Content>Thanks for completing your invitation. You can update your information at anytime. We look forward to seeing you at RU Hacks!</Bulma.Content>
-          </Bulma.Message.Body>
-        </Bulma.Message>
-      )
     } else {
       return (
         <Bulma.Message info id='form-msg'>
           <Bulma.Message.Header>
-            <p style={{margin: 0}}>Info</p>
+            <p>Info</p>
             <Bulma.Delete onClick={() => {
               document.getElementById('form-msg').setAttribute('style', 'display: none')
             }} />
@@ -136,8 +107,6 @@ function GetView (props) {
     return (<Application app={props.app} />)
   } else if (location.indexOf('/app') === 0) {
     return (<Dashboard app={props.app} />)
-  } else if (location.indexOf('/invitation') === 0) {
-    return (<Invitation app={props.app} />)
   }
 
   return (null)
@@ -150,7 +119,7 @@ function showNavLinks (props) {
     links.push(<PanelLink link='/application' icon='file-text-o' title='Application' label='Application' className={props.activeTab === 'application' ? 'is-active' : ''} key='0' />)
 
     if (props.user.accepted) {
-      links.push(<PanelLink link='/invitation' icon='check-square' title='Invitation' label='Invitation' className={props.activeTab === 'invitation' ? 'is-active' : ''} key='1' />)
+      // links.push(<PanelLink link='/invitation' icon='check-square' title='Invitation' label='Invitation' className={props.activeTab === 'invitation' ? 'is-active' : ''} key='1' />)
       // links.push(<PanelLink link='' icon='users' title='Team' label='Team' className={props.activeTab === 'team' ? 'is-active' : ''} key='2' />)
     }
   }
@@ -168,7 +137,6 @@ class App extends Component {
         accepted: null,
         verificationMsgSeen: null,
         applicationComplete: null,
-        invitationComplete: null
       },
       activeTab: props.location.pathname === '/app' ? 'dashboard' : props.location.pathname.substr(1, props.location.pathname.length - 1)
     }
@@ -181,56 +149,43 @@ class App extends Component {
       firebaseApp.database().ref(`users/${user.uid}`).once('value',
         snapshot => {
           if (snapshot) {
-            const updates = Object.assign({}, this.state)
-
             // ====== Verification Message Seen ======
             let stateExists = true // snapshot.val().verificationMsgSeen !== null && snapshot.val().verificationMsgSeen !== undefined;
 
             if (stateExists) {
-              updates.user.verificationMsgSeen = true
+              this.setState({ user: { ...this.state.user, verificationMsgSeen: true } })
             } else if (user.emailVerified) {
-              updates.user.verificationMsgSeen = false
+              this.setState({ user: { ...this.state.user, verificationMsgSeen: false } })
             }
 
             // ====== Application Complete ======
             stateExists = snapshot.val().applicationComplete !== null && snapshot.val().applicationComplete !== undefined
 
             if (stateExists) {
-              updates.user.applicationComplete = snapshot.val().applicationComplete
+              this.setState({ user: { ...this.state.user, applicationComplete: snapshot.val().applicationComplete } })
             } else {
-              updates.user.applicationComplete = false
+              this.setState({ user: { ...this.state.user, applicationComplete: false } })
             }
 
             // ====== Invitated ======
             stateExists = snapshot.val().accepted !== null && snapshot.val().accepted !== undefined
 
             if (stateExists) {
-              updates.user.accepted = snapshot.val().accepted
+              this.setState({ user: { ...this.state.user, accepted: snapshot.val().accepted } })
             } else {
-              updates.user.accepted = false
+              this.setState({ user: { ...this.state.user, accepted: false } })
             }
 
-            // ====== Invitation Complete ======
-            stateExists = snapshot.val().invitationComplete !== null && snapshot.val().invitationComplete !== undefined
-
-            if (stateExists) {
-              updates.user.invitationComplete = snapshot.val().invitationComplete
-            } else {
-              updates.user.invitationComplete = false
-            }
-
-            this.setState({ user: { ...this.state.user, ...updates.user } }, () => {
-              // ====== Update db ======
-              firebaseApp.database().ref(`users/${user.uid}`).set({
-                ...snapshot.val(),
-                ...updates.user
-              }).then(() => {
-                // Update successful.
-                // console.log('Updated verified info message seen field', user);
-              }).catch(error => {
-                // An error happened.
-                // console.log('Failed to update verified info message seen field', user);
-              })
+            // ====== Update db ======
+            firebaseApp.database().ref(`users/${user.uid}`).set({
+              ...snapshot.val(),
+              ...this.state.user
+            }).then(() => {
+              // Update successful.
+              // console.log('Updated verified info message seen field', user);
+            }).catch(error => {
+              // An error happened.
+              // console.log('Failed to update verified info message seen field', user);
             })
 
             // ====== Show Messages ======
