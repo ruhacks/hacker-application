@@ -14,7 +14,7 @@ function GetMessages (props) {
       return (
         <Bulma.Message info>
           <Bulma.Message.Header>
-            <p>Info</p>
+            <p style={{margin: 0}}>Info</p>
           </Bulma.Message.Header>
           <Bulma.Message.Body>
             <Bulma.Content>Please verify your account by checking your email inbox. Also, check in your junk/spam box if you cannot find it in your inbox.</Bulma.Content>
@@ -31,7 +31,7 @@ function GetMessages (props) {
         return (
           <Bulma.Message info id='form-msg'>
             <Bulma.Message.Header>
-              <p>Info</p>
+              <p style={{margin: 0}}>Info</p>
               <Bulma.Delete onClick={() => {
                 document.getElementById('form-msg').setAttribute('style', 'display: none')
               }} />
@@ -50,7 +50,7 @@ function GetMessages (props) {
       return (
         <Bulma.Message info id='form-msg'>
           <Bulma.Message.Header>
-            <p>Info</p>
+            <p style={{margin: 0}}>Info</p>
             <Bulma.Delete onClick={() => {
               document.getElementById('form-msg').setAttribute('style', 'display: none')
             }} />
@@ -62,9 +62,9 @@ function GetMessages (props) {
       )
     } else if (props.app.state.user.accepted) {
       return (
-        <Bulma.Message info id='form-msg'>
+        <Bulma.Message success id='form-msg'>
           <Bulma.Message.Header>
-            <p>Success</p>
+            <p style={{margin: 0}}>Success</p>
             <Bulma.Delete onClick={() => {
               document.getElementById('form-msg').setAttribute('style', 'display: none')
             }} />
@@ -78,7 +78,7 @@ function GetMessages (props) {
       return (
         <Bulma.Message info id='form-msg'>
           <Bulma.Message.Header>
-            <p>Info</p>
+            <p style={{margin: 0}}>Info</p>
             <Bulma.Delete onClick={() => {
               document.getElementById('form-msg').setAttribute('style', 'display: none')
             }} />
