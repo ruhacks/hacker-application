@@ -737,7 +737,7 @@ class Invitation extends Component {
                         invitation: {
                           ...this.state.invitation,
                           dietaryRestrictions: {
-                            ...this.state.invitation.dietaryRestrictions.string,
+                            ...this.state.invitation.dietaryRestrictions,
                             string: event.target.value
                           }
                         }
