@@ -2,51 +2,52 @@ import React, { Component } from 'react'
 import ReactDom from 'react-dom'
 import { firebaseApp } from '../firebase'
 import * as Bulma from 'reactbulma'
-import * as _uuid from 'uuid'
 
 const initialValidInputState = {
+  attending: '',
+  tshirtSize: '',
+  'hardware.want': '',
+  'hardware.list': '',
+  // 'hardware.other': '',
   'dietaryRestrictions.has': '',
   'dietaryRestrictions.string': '',
-  hardware: '',
-  additionalComments: '',
-  attending: '',
-  'name.first': '',
-  gender: '',
-  skills: ''
+  additionalComments: ''
 }
 
-function SkillSelection (props) {
-  const skills = props.app.state.skillSelection
-  const skillEl = []
+function HardwareSelection (props) {
+  const hardwareCollection = props.app.state.hardwareCollection
+  const hardwareEl = []
 
-  Object.keys(skills).forEach((skill, index) => {
-    skillEl.push(
+  Object.keys(hardwareCollection).forEach((hardware, index) => {
+    hardwareEl.push(
       <div className='control' key={index}>
-        <label htmlFor={`experience-${skill}`} className='checkbox'>
+        <label htmlFor={`hardware-${hardware}`} className='checkbox'>
           <input
-            id={`experience-${skill}`}
+            id={`hardware-${hardware}`}
             type='checkbox'
-            value={skill}
-            name='experience'
-            checked={skills[skill].checked}
+            value={hardware}
+            name='hardware'
+            checked={hardwareCollection[hardware].checked}
             onChange={event => {
-              props.app.updateSkillSelect(skill)
-              props.app.setState({ validInput: { ...props.app.state.validInput, skills: '' } })
+              props.app.updateHardwareSelect(hardware)
+              props.app.setState({ validInput: { ...props.app.state.validInput, 'hardware.list': '' } })
             }}
           />
           <span
-            className={`tag is-rounded is-medium ${skills[skill].checked ? 'is-primary' : ''} ${
-              props.app.state.validInput.skills
-            }`}
+            className={
+              `tag is-rounded is-medium ` +
+              (hardwareCollection[hardware].checked ? 'is-primary ' : ' ') +
+              props.app.state.validInput['hardware.list']
+            }
           >
-            {skills[skill].label}
+            {hardwareCollection[hardware].label}
           </span>
         </label>
       </div>
     )
   })
 
-  return skillEl.length > 0 ? skillEl : null
+  return hardwareEl.length > 0 ? hardwareEl : null
 }
 
 // ====== Start Deep Merging ======
@@ -89,143 +90,58 @@ class Invitation extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      userApplication: {
+      invitation: {
         attending: null,
+        tshirtSize: 'small',
+        hardware: {
+          want: false,
+          list: ''
+          // list: [],
+          // other: '',
+        },
         dietaryRestrictions: {
           has: false,
           string: '',
         },
-        additionalComments: '',
-        name: {
-          first: '',
-        },
-        gender: 'male',
-        skills: [],
+        additionalComments: ''
       },
-      skillSelection: {
-        analytics: {
+      /* hardwareCollection: {
+        arduino: {
           checked: false,
-          label: 'Analytics'
+          label: 'Arduino'
         },
-        android: {
+        raspberryPi: {
           checked: false,
-          label: 'Android'
+          label: 'Raspberry Pi'
         },
-        ar: {
+        other: {
           checked: false,
-          label: 'Augmented Reality (AR)'
-        },
-        dba: {
-          checked: false,
-          label: 'Database Administration (DBA)'
+          label: 'Other'
         }
-      },
+      }, */
       validInput: { ...initialValidInputState },
-    }
-
-    this.handleFilename = (file) => {
-      this.setState({
-        userApplication: {
-          ...this.state.userApplication,
-          experience: {
-            ...this.state.userApplication.experience,
-            resume: file.name,
-          }
-        }
-      })
-
-      return (0, _uuid.v4)()
-    }
-
-    this.handleUploadStart = () => {
-      this.setState({ isUploading: true, progress: 0 })
-    }
-
-    this.handleProgress = (progress) => {
-      this.setState({ progress })
-    }
-
-    this.handleUploadError = (error) => {
-      this.setState({
-        userApplication: {
-          ...this.state.userApplication,
-          experience: {
-            ...this.state.userApplication.experience,
-            resume: this.state.resumeBkup.resume,
-            resumeUID: this.state.resumeBkup.resumeUID,
-            resumeURL: this.state.resumeBkup.resumeURL,
-          }
-        },
-        progress: 0,
-        isUploading: false,
-      })
-      window.alert('Failed to save your resume. Try again later.')
-      // console.error(error);
-    }
-
-    this.handleUploadSuccess = (filename) => {
-      this.setState({
-        userApplication: {
-          ...this.state.userApplication,
-          experience: {
-            ...this.state.userApplication.experience,
-            resumeUID: filename,
-          }
-        },
-        progress: 100,
-        isUploading: false,
-        unsaved: true,
-      })
-
-      const clearProgress = window.setTimeout(() => {
-        this.setState({ progress: 0 })
-        window.clearTimeout(clearProgress)
-      }, 5000)
-
-      firebaseApp
-        .storage()
-        .ref('resumes')
-        .child(filename)
-        .getDownloadURL()
-        .then(url => this.setState({
-          userApplication: {
-            ...this.state.userApplication,
-            experience: {
-              ...this.state.userApplication.experience,
-              resumeURL: url,
-            }
-          }
-        }))
     }
 
     firebaseApp.auth().onAuthStateChanged((user) => {
       firebaseApp
         .database()
-        .ref(`userApplications/${user.uid}`)
+        .ref(`invitations/${user.uid}`)
         .once(
           'value',
           (snapshot) => {
             if (snapshot.val()) {
               this.setState({
-                resumeBkup: {
-                  resume: snapshot.val().experience.resume || '',
-                  resumeUID: snapshot.val().experience.resumeUID || '',
-                  resumeURL: snapshot.val().experience.resumeURL || '',
-                }
+                invitation: mergeDeep(Object.assign({}, this.state.invitation), snapshot.val())
               })
 
-              this.setState({
-                userApplication: mergeDeep(Object.assign({}, this.state.userApplication), snapshot.val())
-              })
-
-              this.state.userApplication.skills.forEach((skill) => {
+              /* this.state.invitation.hardware.list.forEach((hardware) => {
                 this.setState({
-                  skillSelection: {
-                    ...this.state.skillSelection,
-                    [skill]: { ...this.state.skillSelection[skill], checked: true }
+                  hardwareCollection: {
+                    ...this.state.hardwareCollection,
+                    [hardware]: { ...this.state.hardwareCollection[hardware], checked: true }
                   }
                 })
-              })
+              }) */
             } else {
               // console.log('User data cannot  be found');
             }
@@ -237,25 +153,25 @@ class Invitation extends Component {
     })
   }
 
-  updateSkillSelect (value) {
-    const index = this.state.userApplication.skills.indexOf(value)
+  updateHardwareSelect (value) {
+    const index = this.state.invitation.hardware.list.indexOf(value)
 
-    if (this.state.skillSelection[value].checked) {
-      this.state.userApplication.skills.splice(index, 1)
+    if (this.state.hardwareCollection[value].checked) {
+      this.state.invitation.hardware.list.splice(index, 1)
 
       this.setState({
-        skillSelection: {
-          ...this.state.skillSelection,
-          [value]: { ...this.state.skillSelection[value], checked: false }
+        hardwareCollection: {
+          ...this.state.hardwareCollection,
+          [value]: { ...this.state.hardwareCollection[value], checked: false }
         }
       })
     } else {
-      this.state.userApplication.skills.push(value)
+      this.state.invitation.hardware.list.push(value)
 
       this.setState({
-        skillSelection: {
-          ...this.state.skillSelection,
-          [value]: { ...this.state.skillSelection[value], checked: true }
+        hardwareCollection: {
+          ...this.state.hardwareCollection,
+          [value]: { ...this.state.hardwareCollection[value], checked: true }
         }
       })
     }
@@ -273,12 +189,34 @@ class Invitation extends Component {
 
   validatedInput () {
     const optional = [
-      'education.schoolOther',
-      'location.countryOther',
-      'experience.portfolio',
-      'experience.repo',
-      'experience.other',
+      'additionalComments'
     ]
+
+    if (this.state.invitation.attending === true) {
+      if (this.state.invitation.hardware.want === true) {
+        /* if (this.state.invitation.hardware.list.indexOf('other')) {
+          optional.push('hardware.other')
+        } */
+      } else {
+        optional.push('hardware.list')
+      }
+
+      if (this.state.invitation.dietaryRestrictions.has === false) {
+        optional.push('dietaryRestrictions.string')
+      }
+    } else {
+      optional.splice(0, 0,
+        ...[
+          'tshirtSize',
+          'hardware.want',
+          'hardware.list',
+          // 'hardware.other',
+          'dietaryRestrictions.has',
+          'dietaryRestrictions.string'
+        ]
+      )
+    }
+
     const inputs = Object.keys(this.state.validInput)
     let endValidation = false
     let index = 0
@@ -288,7 +226,7 @@ class Invitation extends Component {
 
     while (index < inputs.length && !endValidation) {
       let path = input.split('.')
-      let field = this.state.userApplication
+      let field = this.state.invitation
 
       path.forEach(part => {
         field = field[part]
@@ -296,10 +234,6 @@ class Invitation extends Component {
 
       switch ((typeof field).toLowerCase()) {
         case 'boolean':
-          if (field === false && input === 'mlh') {
-            this.setState({ validInput: { ...this.state.validInput, [input]: 'is-danger' } })
-            endValidation = true
-          }
           break
         case 'number':
           break
@@ -311,6 +245,9 @@ class Invitation extends Component {
           break
         case 'object':
           if (Array.isArray(field) && field.length < 1) {
+            this.setState({ validInput: { ...this.state.validInput, [input]: 'is-danger' } })
+            endValidation = true
+          } else if (field === null && input === 'attending') {
             this.setState({ validInput: { ...this.state.validInput, [input]: 'is-danger' } })
             endValidation = true
           }
@@ -332,9 +269,9 @@ class Invitation extends Component {
 
       firebaseApp
         .database()
-        .ref(`userApplications/${user.uid}`)
+        .ref(`invitations/${user.uid}`)
         .set({
-          ...this.state.userApplication
+          ...this.state.invitation
         })
         .then(() => {
           // Update successful.
@@ -350,7 +287,7 @@ class Invitation extends Component {
               ReactDom.render(
                 <Bulma.Message success id='form-success-msg'>
                   <Bulma.Message.Header>
-                    <p>Info</p>
+                    <p styke={{margin: 0}}>Info</p>
                     <Bulma.Delete
                       onClick={() => {
                         document
@@ -368,8 +305,6 @@ class Invitation extends Component {
             }
           }
 
-          this.setState({ unsaved: false })
-
           firebaseApp
             .database()
             .ref(`users/${user.uid}`)
@@ -380,7 +315,7 @@ class Invitation extends Component {
                   .ref(`users/${user.uid}`)
                   .set({
                     ...snapshot.val(),
-                    applicationComplete: true
+                    invitationComplete: true
                   })
                   .then(() => {
                     // success
@@ -405,7 +340,7 @@ class Invitation extends Component {
               ReactDom.render(
                 <Bulma.Message danger id='form-error-msg'>
                   <Bulma.Message.Header>
-                    <p>Error</p>
+                    <p style={{margin: 0}}>Error</p>
                     <Bulma.Delete
                       onClick={() => {
                         document
@@ -416,7 +351,7 @@ class Invitation extends Component {
                   </Bulma.Message.Header>
                   <Bulma.Message.Body>
                     <Bulma.Content>
-                      Failed to save application info. Please try again later.
+                      Failed to save invitation info. Please try again later.
                     </Bulma.Content>
                   </Bulma.Message.Body>
                 </Bulma.Message>,
@@ -436,7 +371,7 @@ class Invitation extends Component {
           ReactDom.render(
             <Bulma.Message danger id='form-validation-error-msg'>
               <Bulma.Message.Header>
-                <p>Error</p>
+                <p style={{margin: 0}}>Error</p>
                 <Bulma.Delete
                   onClick={() => {
                     document
@@ -447,8 +382,8 @@ class Invitation extends Component {
               </Bulma.Message.Header>
               <Bulma.Message.Body>
                 <Bulma.Content>
-                  Failed to save application info. There are either missing inputs or invalid inputs
-                  provided. Please check your application again.
+                  Failed to save invitation info. There are either missing inputs or invalid inputs
+                  provided. Please check your invitation again.
                 </Bulma.Content>
               </Bulma.Message.Body>
             </Bulma.Message>,
@@ -476,22 +411,22 @@ class Invitation extends Component {
                 <label
                   htmlFor='attending'
                   className={`radio tag is-medium ${
-                    this.state.userApplication.attending === true
+                    this.state.invitation.attending === true
                       ? 'is-success'
                       : ''
-                  } ${this.state.validInput['attending']}`}
+                  } ${this.state.validInput.attending}`}
                 >
                   <input
                     id='attending'
                     type='radio'
                     value='true'
                     name='attending'
-                    checked={this.state.userApplication.attending === true}
+                    checked={this.state.invitation.attending === true}
                     required
                     onChange={event =>
                       this.setState({
-                        userApplication: {
-                          ...this.state.userApplication,
+                        invitation: {
+                          ...this.state.invitation,
                           attending: true
                         }
                       })
@@ -503,23 +438,27 @@ class Invitation extends Component {
                 <label
                   htmlFor='not-attending'
                   className={`radio tag is-medium ${
-                    this.state.userApplication.attending === false
+                    this.state.invitation.attending === false
                       ? 'is-danger'
                       : ''
-                  } ${this.state.validInput['attending']}`}
+                  } ${this.state.validInput.attending}`}
                 >
                   <input
                     id='not-attending'
                     type='radio'
                     value='false'
                     name='attending'
-                    checked={this.state.userApplication.attending === false}
+                    checked={this.state.invitation.attending === false}
                     required
                     onChange={event =>
                       this.setState({
-                        userApplication: {
-                          ...this.state.userApplication,
+                        invitation: {
+                          ...this.state.invitation,
                           attending: false
+                        },
+                        validInput: {
+                          ...this.state.validInput,
+                          attending: ''
                         }
                       })
                     }
@@ -531,63 +470,36 @@ class Invitation extends Component {
           </fieldset>
 
           <div
-            className={this.state.userApplication.attending === true ? '' : 'is-hidden-touch is-hidden-desktop'}
+            className={this.state.invitation.attending === true ? '' : 'is-hidden-touch is-hidden-desktop'}
           >
-            <div className='columns'>
-              <div className='field column is-half'>
-                <label htmlFor='firstname' className='label'>
-                  First Name:
-                </label>
-                <div className='control'>
-                  <input
-                    id='firstname'
-                    className={`input ${this.state.validInput['name.first']}`}
-                    type='text'
-                    name='firstname'
-                    value={this.state.userApplication.name.first}
-                    placeholder='Foo'
-                    required
-                    onChange={event =>
-                      this.setState({
-                        userApplication: {
-                          ...this.state.userApplication,
-                          name: { ...this.state.userApplication.name, first: event.target.value }
-                        }
-                      })
-                    }
-                  />
-                </div>
-              </div>
-            </div>
-
             <div className='field'>
-              <label htmlFor='gender' className='label'>
-                Gender:
+              <label htmlFor='tshirtSize' className='label'>
+                Tshirt Size:
               </label>
               <div className='control'>
-                <div className={`select ${this.state.validInput.gender}`}>
+                <div className={`select ${this.state.validInput.tshirtSize}`}>
                   <select
-                    id='gender'
-                    name='gender'
-                    value={this.state.userApplication.gender}
+                    id='tshirtSize'
+                    name='tshirtSize'
+                    value={this.state.invitation.tshirtSize}
                     required
                     onChange={event =>
                       this.setState({
-                        userApplication: { ...this.state.userApplication, gender: event.target.value }
+                        invitation: { ...this.state.invitation, tshirtSize: event.target.value }
                       })
                     }
-                    cf-questions={
-                      "I hope this isn't too personal, but can you tell me your gender?&&If you wish not to say you can just choose other."
-                    }
                   >
-                    <option value='male' cf-label='Male'>
-                      Male
+                    <option value='small'>
+                      Small
                     </option>
-                    <option value='female' cf-label='Female'>
-                      Female
+                    <option value='medium'>
+                      Medium
                     </option>
-                    <option value='other' cf-label='Other'>
-                      Other
+                    <option value='large'>
+                      Large
+                    </option>
+                    <option value='extra-large'>
+                      Extra Large
                     </option>
                   </select>
                 </div>
@@ -595,11 +507,147 @@ class Invitation extends Component {
             </div>
 
             <fieldset>
-              <legend className='label'>Select your areas of experience:</legend>
+              <legend style={{ display: 'none' }} >Hardware:</legend>
 
-              <div className='field is-grouped is-grouped-multiline tag-selection'>
-                <SkillSelection app={this} />
+              <fieldset>
+                <legend className='label'>Do you require any hardware?</legend>
+
+                <div className='field'>
+                  <div className='control'>
+                    <label
+                      htmlFor='hardware-want-true'
+                      className={`radio tag is-medium ${
+                        this.state.invitation.hardware.want === true
+                          ? 'is-primary'
+                          : ''
+                      } ${this.state.validInput['hardware.want']}`}
+                    >
+                      <input
+                        id='hardware-want-true'
+                        type='radio'
+                        value='true'
+                        name='hardware-want-true'
+                        checked={this.state.invitation.hardware.want === true}
+                        required
+                        onChange={event =>
+                          this.setState({
+                            invitation: {
+                              ...this.state.invitation,
+                              hardware: {
+                                ...this.state.invitation.hardware,
+                                want: true
+                              }
+                            }
+                          })
+                        }
+                      />
+                      Yes
+                    </label>
+
+                    <label
+                      htmlFor='hardware-want-false'
+                      className={`radio tag is-medium ${
+                        this.state.invitation.hardware.want === false
+                          ? 'is-primary'
+                          : ''
+                      } ${this.state.validInput['hardware.want']}`}
+                    >
+                      <input
+                        id='hardware-want-false'
+                        type='radio'
+                        value='false'
+                        name='hardware-want'
+                        checked={this.state.invitation.hardware.want === false}
+                        required
+                        onChange={event =>
+                          this.setState({
+                            invitation: {
+                              ...this.state.invitation,
+                              hardware: {
+                                ...this.state.invitation.hardware,
+                                want: false
+                              }
+                            }
+                          })
+                        }
+                      />
+                      No
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+
+              <div className={`columns ${this.state.invitation.hardware.want === true ? '' : 'is-hidden-touch is-hidden-desktop'}`}>
+                <div className='field column is-half'>
+                  <label htmlFor='hardware-list' className='label'>
+                    List hardware you would like:
+                  </label>
+                  <div className='control'>
+                    <input
+                      id='hardware-list'
+                      className={`input ${this.state.validInput['hardware.list']}`}
+                      type='text'
+                      name='hardware-list'
+                      value={this.state.invitation.hardware.list}
+                      placeholder='Arduino, Raspberry Pi, etc.'
+                      required
+                      onChange={event =>
+                        this.setState({
+                          invitation: {
+                            ...this.state.invitation,
+                            hardware: {
+                              ...this.state.invitation.hardware,
+                              list: event.target.value
+                            }
+                          }
+                        })
+                      }
+                    />
+                  </div>
+                </div>
               </div>
+
+              {/*
+                <fieldset className={`field ${this.state.invitation.hardware.want === true ? '' : 'is-hidden-touch is-hidden-desktop'}`}>
+                  <legend className='label'>Select the hardware you require:</legend>
+
+                  <div className='field is-grouped is-grouped-multiline tag-selection'>
+                    <HardwareSelection app={this} />
+                  </div>
+                </fieldset>
+              */}
+
+              {/*
+              <div className={`columns ${this.state.invitation.hardware.list.indexOf('other') > -1 ? '' : 'is-hidden-touch is-hidden-desktop'}`}>
+                <div className='field column is-half'>
+                  <label htmlFor='hardware-other' className='label'>
+                    List other hardware you would like:
+                  </label>
+                  <div className='control'>
+                    <input
+                      id='hardware-other'
+                      className={`input ${this.state.validInput['hardware.other']}`}
+                      type='text'
+                      name='hardware-other'
+                      value={this.state.invitation.hardware.other}
+                      placeholder='Arduino, Raspberry Pi, etc.'
+                      required
+                      onChange={event =>
+                        this.setState({
+                          invitation: {
+                            ...this.state.invitation,
+                            hardware: {
+                              ...this.state.invitation.hardware,
+                              other: event.target.value
+                            }
+                          }
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+              */}
             </fieldset>
 
             <fieldset>
@@ -613,7 +661,7 @@ class Invitation extends Component {
                     <label
                       htmlFor='dietaryRestrictions-has-true'
                       className={`radio tag is-medium ${
-                        this.state.userApplication.dietaryRestrictions.has === true
+                        this.state.invitation.dietaryRestrictions.has === true
                           ? 'is-primary'
                           : ''
                       } ${this.state.validInput['dietaryRestrictions.has']}`}
@@ -623,14 +671,14 @@ class Invitation extends Component {
                         type='radio'
                         value='true'
                         name='dietaryRestrictions-has'
-                        checked={this.state.userApplication.dietaryRestrictions.has === true}
+                        checked={this.state.invitation.dietaryRestrictions.has === true}
                         required
                         onChange={event =>
                           this.setState({
-                            userApplication: {
-                              ...this.state.userApplication,
+                            invitation: {
+                              ...this.state.invitation,
                               dietaryRestrictions: {
-                                ...this.state.userApplication.dietaryRestrictions,
+                                ...this.state.invitation.dietaryRestrictions,
                                 has: true
                               }
                             }
@@ -643,7 +691,7 @@ class Invitation extends Component {
                     <label
                       htmlFor='dietaryRestrictions-has-false'
                       className={`radio tag is-medium ${
-                        this.state.userApplication.dietaryRestrictions.has === false
+                        this.state.invitation.dietaryRestrictions.has === false
                           ? 'is-primary'
                           : ''
                       } ${this.state.validInput['dietaryRestrictions.has']}`}
@@ -653,14 +701,14 @@ class Invitation extends Component {
                         type='radio'
                         value='false'
                         name='dietaryRestrictions-has'
-                        checked={this.state.userApplication.dietaryRestrictions.has === false}
+                        checked={this.state.invitation.dietaryRestrictions.has === false}
                         required
                         onChange={event =>
                           this.setState({
-                            userApplication: {
-                              ...this.state.userApplication,
+                            invitation: {
+                              ...this.state.invitation,
                               dietaryRestrictions: {
-                                ...this.state.userApplication.dietaryRestrictions,
+                                ...this.state.invitation.dietaryRestrictions,
                                 has: false
                               }
                             }
@@ -673,7 +721,7 @@ class Invitation extends Component {
                 </div>
               </fieldset>
 
-              <div className={`field ${this.state.userApplication.dietaryRestrictions.has === true ? '' : 'is-hidden-touch is-hidden-desktop'}`}>
+              <div className={`field ${this.state.invitation.dietaryRestrictions.has === true ? '' : 'is-hidden-touch is-hidden-desktop'}`}>
                 <label htmlFor='dietaryRestrictions-string' className='label'>
                   Please list your dietary restrictions:
                 </label>
@@ -682,14 +730,14 @@ class Invitation extends Component {
                     id='dietaryRestrictions-string'
                     className={`textarea ${this.state.validInput['dietaryRestrictions.string']}`}
                     name='dietaryRestrictions-string'
-                    value={this.state.userApplication.dietaryRestrictions.string}
+                    value={this.state.invitation.dietaryRestrictions.string}
                     required
                     onChange={event =>
                       this.setState({
-                        userApplication: {
-                          ...this.state.userApplication,
+                        invitation: {
+                          ...this.state.invitation,
                           dietaryRestrictions: {
-                            ...this.state.userApplication.dietaryRestrictions.string,
+                            ...this.state.invitation.dietaryRestrictions.string,
                             string: event.target.value
                           }
                         }
@@ -709,12 +757,12 @@ class Invitation extends Component {
                   id='additionalComments'
                   className={`textarea ${this.state.validInput['additionalComments']}`}
                   name='additionalComments'
-                  value={this.state.userApplication.additionalComments}
+                  value={this.state.invitation.additionalComments}
                   required
                   onChange={event =>
                     this.setState({
-                      userApplication: {
-                        ...this.state.userApplication,
+                      invitation: {
+                        ...this.state.invitation,
                         additionalComments: event.target.value
                       }
                     })
