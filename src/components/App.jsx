@@ -60,20 +60,6 @@ function GetMessages (props) {
           </Bulma.Message.Body>
         </Bulma.Message>
       )
-    } else if (props.app.state.user.accepted) {
-      return (
-        <Bulma.Message success id='form-msg'>
-          <Bulma.Message.Header>
-            <p style={{margin: 0}}>Success</p>
-            <Bulma.Delete onClick={() => {
-              document.getElementById('form-msg').setAttribute('style', 'display: none')
-            }} />
-          </Bulma.Message.Header>
-          <Bulma.Message.Body>
-            <Bulma.Content>You've been invited to come to RU Hacks! You can access it by the navigation sidebar or clicking <a href='/invitation' title='RU Hacks Hacker Invitation'>here</a>.</Bulma.Content>
-          </Bulma.Message.Body>
-        </Bulma.Message>
-      )
     } else if (props.app.state.user.invitationComplete) {
       return (
         <Bulma.Message success id='form-msg'>
@@ -85,6 +71,20 @@ function GetMessages (props) {
           </Bulma.Message.Header>
           <Bulma.Message.Body>
             <Bulma.Content>Thanks for completing your invitation. You can update your information at anytime. We look forward to seeing you at RU Hacks!</Bulma.Content>
+          </Bulma.Message.Body>
+        </Bulma.Message>
+      )
+    } else if (props.app.state.user.accepted) {
+      return (
+        <Bulma.Message success id='form-msg'>
+          <Bulma.Message.Header>
+            <p style={{margin: 0}}>Success</p>
+            <Bulma.Delete onClick={() => {
+              document.getElementById('form-msg').setAttribute('style', 'display: none')
+            }} />
+          </Bulma.Message.Header>
+          <Bulma.Message.Body>
+            <Bulma.Content>You've been invited to come to RU Hacks! You can access it by the navigation sidebar or clicking <a href='/invitation' title='RU Hacks Hacker Invitation'>here</a>.</Bulma.Content>
           </Bulma.Message.Body>
         </Bulma.Message>
       )
