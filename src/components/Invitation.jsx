@@ -287,7 +287,7 @@ class Invitation extends Component {
               ReactDom.render(
                 <Bulma.Message success id='form-success-msg'>
                   <Bulma.Message.Header>
-                    <p style={{margin: 0}}>Info</p>
+                    <p styke={{margin: 0}}>Info</p>
                     <Bulma.Delete
                       onClick={() => {
                         document
