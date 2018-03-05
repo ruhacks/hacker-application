@@ -74,6 +74,20 @@ function GetMessages (props) {
           </Bulma.Message.Body>
         </Bulma.Message>
       )
+    } else if (props.app.state.user.invitationComplete) {
+      return (
+        <Bulma.Message success id='form-msg'>
+          <Bulma.Message.Header>
+            <p style={{margin: 0}}>Success</p>
+            <Bulma.Delete onClick={() => {
+              document.getElementById('form-msg').setAttribute('style', 'display: none')
+            }} />
+          </Bulma.Message.Header>
+          <Bulma.Message.Body>
+            <Bulma.Content>Thanks for completing your invitation. You can update your information at anytime. We look forward to seeing you at RU Hacks!</Bulma.Content>
+          </Bulma.Message.Body>
+        </Bulma.Message>
+      )
     } else {
       return (
         <Bulma.Message info id='form-msg'>
@@ -154,6 +168,7 @@ class App extends Component {
         accepted: null,
         verificationMsgSeen: null,
         applicationComplete: null,
+        invitationComplete: null
       },
       activeTab: props.location.pathname === '/app' ? 'dashboard' : props.location.pathname.substr(1, props.location.pathname.length - 1)
     }
@@ -193,6 +208,15 @@ class App extends Component {
               updates.user.accepted = snapshot.val().accepted
             } else {
               updates.user.accepted = false
+            }
+
+            // ====== Invitation Complete ======
+            stateExists = snapshot.val().invitationComplete !== null && snapshot.val().invitationComplete !== undefined
+
+            if (stateExists) {
+              updates.user.invitationComplete = snapshot.val().invitationComplete
+            } else {
+              updates.user.invitationComplete = false
             }
 
             this.setState({ user: { ...this.state.user, ...updates.user } }, () => {
