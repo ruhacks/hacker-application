@@ -1417,6 +1417,10 @@ class Application extends Component {
               }
               style={{ cursor: 'pointer', display: 'block', height: 'auto', padding: '1em', whiteSpace: 'normal' }}
             >
+              <i
+                className={`fa fa-${this.state.userApplication.mlh ? 'check-' : ''}square-o`}
+                style={{marginRight: '0.5em'}}
+              />
               <label htmlFor='agree-to-terms'>
                 <input
                   id='agree-to-terms'
