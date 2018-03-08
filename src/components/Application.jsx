@@ -599,7 +599,7 @@ class Application extends Component {
               ReactDom.render(
                 <Bulma.Message success id='form-success-msg'>
                   <Bulma.Message.Header>
-                    <p style={{margin: 0}}>Info</p>
+                    <p>Info</p>
                     <Bulma.Delete
                       onClick={() => {
                         document
@@ -654,7 +654,7 @@ class Application extends Component {
               ReactDom.render(
                 <Bulma.Message danger id='form-error-msg'>
                   <Bulma.Message.Header>
-                    <p style={{margin: 0}}>Error</p>
+                    <p>Error</p>
                     <Bulma.Delete
                       onClick={() => {
                         document
@@ -685,7 +685,7 @@ class Application extends Component {
           ReactDom.render(
             <Bulma.Message danger id='form-validation-error-msg'>
               <Bulma.Message.Header>
-                <p style={{margin: 0}}>Error</p>
+                <p>Error</p>
                 <Bulma.Delete
                   onClick={() => {
                     document
