@@ -599,7 +599,7 @@ class Application extends Component {
               ReactDom.render(
                 <Bulma.Message success id='form-success-msg'>
                   <Bulma.Message.Header>
-                    <p>Info</p>
+                    <p style={{margin: 0}}>Info</p>
                     <Bulma.Delete
                       onClick={() => {
                         document
@@ -654,7 +654,7 @@ class Application extends Component {
               ReactDom.render(
                 <Bulma.Message danger id='form-error-msg'>
                   <Bulma.Message.Header>
-                    <p>Error</p>
+                    <p style={{margin: 0}}>Error</p>
                     <Bulma.Delete
                       onClick={() => {
                         document
@@ -685,7 +685,7 @@ class Application extends Component {
           ReactDom.render(
             <Bulma.Message danger id='form-validation-error-msg'>
               <Bulma.Message.Header>
-                <p>Error</p>
+                <p style={{margin: 0}}>Error</p>
                 <Bulma.Delete
                   onClick={() => {
                     document
@@ -1417,6 +1417,10 @@ class Application extends Component {
               }
               style={{ cursor: 'pointer', display: 'block', height: 'auto', padding: '1em', whiteSpace: 'normal' }}
             >
+              <i
+                className={`fa fa-${this.state.userApplication.mlh ? 'check-' : ''}square-o`}
+                style={{marginRight: '0.5em'}}
+              />
               <label htmlFor='agree-to-terms'>
                 <input
                   id='agree-to-terms'
