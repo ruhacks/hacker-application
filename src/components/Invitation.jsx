@@ -917,6 +917,9 @@ class Invitation extends Component {
                     as='a'
                     className='button is-link'
                     href='https://goo.gl/forms/8cUzFnFoJ8iMDOVV2'
+                    title='RU Hacks Bus Form'
+                    target='_blank'
+                    rel='nofollow noreferrer noopener'
                   >
                     Bus Form&nbsp;->&nbsp;<em>First come, first serve!</em>
                   </Bulma.Button>
