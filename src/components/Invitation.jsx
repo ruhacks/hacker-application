@@ -6,6 +6,8 @@ import * as Bulma from 'reactbulma'
 const initialValidInputState = {
   attending: '',
   tshirtSize: '',
+  'emergencyContact.name': '',
+  'emergencyContact.phone': '',
   'hardware.want': '',
   'hardware.list': '',
   // 'hardware.other': '',
@@ -96,6 +98,10 @@ class Invitation extends Component {
       invitation: {
         attending: null,
         tshirtSize: 'small',
+        emergencyContact: {
+          name: '',
+          phone: ''
+        },
         hardware: {
           want: false,
           list: ''
@@ -223,6 +229,8 @@ class Invitation extends Component {
       optional.splice(0, 0,
         ...[
           'tshirtSize',
+          'emergencyContact.name',
+          'emergencyContact.phone',
           'hardware.want',
           'hardware.list',
           // 'hardware.other',
@@ -527,6 +535,68 @@ class Invitation extends Component {
                 </div>
               </div>
             </div>
+
+            <fieldset>
+              <legend style={{ display: 'none' }} >Eemergency Contact:</legend>
+
+              <div className='columns'>
+                <div className='field column is-half'>
+                  <label htmlFor='emergency-contact-name' className='label'>
+                    Emergency Contact Name:
+                  </label>
+                  <div className='control'>
+                    <input
+                      id='emergency-contact-name'
+                      className={`input ${this.state.validInput['emergencyContact.name']}`}
+                      type='text'
+                      name='emergency-contact-name'
+                      value={this.state.invitation.emergencyContact.name}
+                      placeholder='Jon Snow'
+                      required
+                      onChange={event =>
+                        this.setState({
+                          invitation: {
+                            ...this.state.invitation,
+                            emergencyContact: {
+                              ...this.state.invitation.emergencyContact,
+                              name: event.target.value
+                            }
+                          }
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+
+                <div className='field column is-half'>
+                  <label htmlFor='emergency-contact-phone' className='label'>
+                    Emergency Contact Phone Number:
+                  </label>
+                  <div className='control'>
+                    <input
+                      id='emergency-contact-phone'
+                      className={`input ${this.state.validInput['emergencyContact.phone']}`}
+                      type='tel'
+                      name='emergency-contact-phone'
+                      value={this.state.invitation.emergencyContact.phone}
+                      placeholder='999-999-999'
+                      required
+                      onChange={event =>
+                        this.setState({
+                          invitation: {
+                            ...this.state.invitation,
+                            emergencyContact: {
+                              ...this.state.invitation.emergencyContact,
+                              phone: event.target.value
+                            }
+                          }
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+            </fieldset>
 
             <fieldset>
               <legend style={{ display: 'none' }} >Hardware:</legend>
