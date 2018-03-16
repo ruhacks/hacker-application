@@ -510,7 +510,7 @@ class Invitation extends Component {
               <legend style={{ display: 'none' }} >Hardware:</legend>
 
               <fieldset>
-                <legend className='label'>Do you require any hardware?</legend>
+                <legend className='label'>Do you require any hardware? <em>We will try to fulfill requests.</em></legend>
 
                 <div className='field'>
                   <div className='control'>
