@@ -11,6 +11,9 @@ const initialValidInputState = {
   // 'hardware.other': '',
   'dietaryRestrictions.has': '',
   'dietaryRestrictions.string': '',
+  'travel.outsideGTA': '',
+  'travel.bus': '',
+  'travel.reimburse': '',
   additionalComments: ''
 }
 
@@ -102,6 +105,11 @@ class Invitation extends Component {
         dietaryRestrictions: {
           has: false,
           string: '',
+        },
+        travel: {
+          outsideGTA: false,
+          bus: false,
+          reimburse: false
         },
         additionalComments: ''
       },
@@ -204,6 +212,13 @@ class Invitation extends Component {
       if (this.state.invitation.dietaryRestrictions.has === false) {
         optional.push('dietaryRestrictions.string')
       }
+
+      if (this.state.invitation.travel.outsideGTA === false) {
+        optional.push('travel.bus')
+        optional.push('travel.reimburse')
+      } else if (this.state.invitation.travel.bus === true) {
+        optional.push('travel.reimburse')
+      }
     } else {
       optional.splice(0, 0,
         ...[
@@ -212,7 +227,10 @@ class Invitation extends Component {
           'hardware.list',
           // 'hardware.other',
           'dietaryRestrictions.has',
-          'dietaryRestrictions.string'
+          'dietaryRestrictions.string',
+          'travel.outsideGTA',
+          'travel.bus',
+          'travel.reimburse'
         ]
       )
     }
@@ -428,6 +446,10 @@ class Invitation extends Component {
                         invitation: {
                           ...this.state.invitation,
                           attending: true
+                        },
+                        validInput: {
+                          ...this.state.validInput,
+                          attending: ''
                         }
                       })
                     }
@@ -526,7 +548,7 @@ class Invitation extends Component {
                         id='hardware-want-true'
                         type='radio'
                         value='true'
-                        name='hardware-want-true'
+                        name='hardware-want'
                         checked={this.state.invitation.hardware.want === true}
                         required
                         onChange={event =>
@@ -745,6 +767,228 @@ class Invitation extends Component {
                     }
                   />
                 </div>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend style={{ display: 'none' }} >Travel:</legend>
+
+              <fieldset>
+                <legend className='label'>Are you outside of GTA?</legend>
+
+                <div className='field'>
+                  <div className='control'>
+                    <label
+                      htmlFor='travel-outside-GTA-true'
+                      className={`radio tag is-medium ${
+                        this.state.invitation.travel.outsideGTA === true
+                          ? 'is-primary'
+                          : ''
+                      } ${this.state.validInput['travel.outsideGTA']}`}
+                    >
+                      <input
+                        id='travel-outside-GTA-true'
+                        type='radio'
+                        value='true'
+                        name='travel-outside-GTA'
+                        checked={this.state.invitation.travel.outsideGTA === true}
+                        required
+                        onChange={event =>
+                          this.setState({
+                            invitation: {
+                              ...this.state.invitation,
+                              travel: {
+                                ...this.state.invitation.travel,
+                                outsideGTA: true
+                              }
+                            }
+                          })
+                        }
+                      />
+                      Yes
+                    </label>
+
+                    <label
+                      htmlFor='travel-outside-GTA-false'
+                      className={`radio tag is-medium ${
+                        this.state.invitation.travel.outsideGTA === false
+                          ? 'is-primary'
+                          : ''
+                      } ${this.state.validInput['travel.outsideGTA']}`}
+                    >
+                      <input
+                        id='travel-outside-GTA-false'
+                        type='radio'
+                        value='false'
+                        name='travel-outside-GTA'
+                        checked={this.state.invitation.travel.outsideGTA === false}
+                        required
+                        onChange={event =>
+                          this.setState({
+                            invitation: {
+                              ...this.state.invitation,
+                              travel: {
+                                ...this.state.invitation.travel,
+                                outsideGTA: false
+                              }
+                            }
+                          })
+                        }
+                      />
+                      No
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+
+              <div className={`field ${this.state.invitation.travel.outsideGTA === true ? '' : 'is-hidden-touch is-hidden-desktop'}`}>
+                <fieldset>
+                  <legend className='label'>Buses will be sent to Waterloo, Western, McMaster, and Ottawa. Will you be taking the bus?</legend>
+
+                  <div className='field'>
+                    <div className='control'>
+                      <label
+                        htmlFor='travel-bus-true'
+                        className={`radio tag is-medium ${
+                          this.state.invitation.travel.bus === true
+                            ? 'is-primary'
+                            : ''
+                        } ${this.state.validInput['travel.bus']}`}
+                      >
+                        <input
+                          id='travel-bus-true'
+                          type='radio'
+                          value='true'
+                          name='travel-bus'
+                          checked={this.state.invitation.travel.bus === true}
+                          required
+                          onChange={event =>
+                            this.setState({
+                              invitation: {
+                                ...this.state.invitation,
+                                travel: {
+                                  ...this.state.invitation.travel,
+                                  bus: true
+                                }
+                              }
+                            })
+                          }
+                        />
+                        Yes
+                      </label>
+
+                      <label
+                        htmlFor='travel-bus-false'
+                        className={`radio tag is-medium ${
+                          this.state.invitation.travel.bus === false
+                            ? 'is-primary'
+                            : ''
+                        } ${this.state.validInput['travel.bus']}`}
+                      >
+                        <input
+                          id='travel-bus-false'
+                          type='radio'
+                          value='false'
+                          name='travel-bus'
+                          checked={this.state.invitation.travel.bus === false}
+                          required
+                          onChange={event =>
+                            this.setState({
+                              invitation: {
+                                ...this.state.invitation,
+                                travel: {
+                                  ...this.state.invitation.travel,
+                                  bus: false
+                                }
+                              }
+                            })
+                          }
+                        />
+                        No
+                      </label>
+                    </div>
+                  </div>
+                </fieldset>
+
+                <fieldset className={`field ${this.state.invitation.travel.bus === true ? '' : 'is-hidden-touch is-hidden-desktop'}`}>
+                  <legend className='label'>Please follow the link below and follow the steps to reserve your bus spot.</legend>
+
+                  <Bulma.Button
+                    as='a'
+                    className='button is-link'
+                    href='https://goo.gl/forms/8cUzFnFoJ8iMDOVV2'
+                  >
+                    Bus Form&nbsp;->&nbsp;<em>First come, first serve!</em>
+                  </Bulma.Button>
+                </fieldset>
+
+                <fieldset className={`field ${this.state.invitation.travel.bus === false ? '' : 'is-hidden-touch is-hidden-desktop'}`}>
+                  <legend className='label'>Will you need travel reimbursement?</legend>
+
+                  <div className='field'>
+                    <div className='control'>
+                      <label
+                        htmlFor='travel-reimburse-true'
+                        className={`radio tag is-medium ${
+                          this.state.invitation.travel.reimburse === true
+                            ? 'is-primary'
+                            : ''
+                        } ${this.state.validInput['travel.reimburse']}`}
+                      >
+                        <input
+                          id='travel-reimburse-true'
+                          type='radio'
+                          value='true'
+                          name='travel-reimburse'
+                          checked={this.state.invitation.travel.reimburse === true}
+                          required
+                          onChange={event =>
+                            this.setState({
+                              invitation: {
+                                ...this.state.invitation,
+                                travel: {
+                                  ...this.state.invitation.travel,
+                                  reimburse: true
+                                }
+                              }
+                            })
+                          }
+                        />
+                        Yes
+                      </label>
+
+                      <label
+                        htmlFor='travel-reimburse-false'
+                        className={`radio tag is-medium ${
+                          this.state.invitation.travel.reimburse === false
+                            ? 'is-primary'
+                            : ''
+                        } ${this.state.validInput['travel.reimburse']}`}
+                      >
+                        <input
+                          id='travel-reimburse-false'
+                          type='radio'
+                          value='false'
+                          name='travel-reimburse'
+                          checked={this.state.invitation.travel.reimburse === false}
+                          required
+                          onChange={event =>
+                            this.setState({
+                              invitation: {
+                                ...this.state.invitation,
+                                travel: {
+                                  ...this.state.invitation.travel,
+                                  reimburse: false
+                                }
+                              }
+                            })
+                          }
+                        />
+                        No
+                      </label>
+                    </div>
+                  </div>
+                </fieldset>
               </div>
             </fieldset>
 
