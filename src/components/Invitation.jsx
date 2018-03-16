@@ -899,7 +899,9 @@ class Invitation extends Component {
                               ...this.state.invitation,
                               travel: {
                                 ...this.state.invitation.travel,
-                                outsideGTA: false
+                                outsideGTA: false,
+                                bus: false,
+                                reimburse: false
                               }
                             }
                           })
@@ -938,7 +940,8 @@ class Invitation extends Component {
                                 ...this.state.invitation,
                                 travel: {
                                   ...this.state.invitation.travel,
-                                  bus: true
+                                  bus: true,
+                                  reimburse: false
                                 }
                               }
                             })
