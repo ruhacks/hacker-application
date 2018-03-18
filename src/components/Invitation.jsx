@@ -844,7 +844,7 @@ class Invitation extends Component {
               <legend style={{ display: 'none' }} >Travel:</legend>
 
               <fieldset>
-                <legend className='label'>Are you outside of GTA?</legend>
+                <legend className='label'>Will you be coming from outside of the GTA?</legend>
 
                 <div className='field'>
                   <div className='control'>
