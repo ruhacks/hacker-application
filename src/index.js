@@ -42,7 +42,7 @@ ReactDom.render(
     <Route path='/application' component={App} />
     <Route path='/invitation' component={App} />
     <Route path='/login' component={Login} />
-    <Route path='/register' component={Login} />
+    {/*<Route path='/register' component={Login} />*/}
     <Route path='/forgotPassword' component={Login} />
   </Router>,
   document.getElementById('root')

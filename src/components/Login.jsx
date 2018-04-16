@@ -279,7 +279,7 @@ class Login extends Component {
                   Login
                 </a>
                 <div style={{display: (this.state.isRegister ? 'none' : 'block')}}>
-                  <a
+                  {/*<a
                     style={{
                       display: 'block',
                       marginBottom: '0.5em'
@@ -288,7 +288,7 @@ class Login extends Component {
                     title='Register'
                   >
                     Register
-                  </a>
+                  </a>*/}
                   <a
                     style={{display: (this.state.isForgotPassword ? 'none' : 'block')}}
                     href='/forgotPassword'
