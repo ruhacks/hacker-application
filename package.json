@@ -20,7 +20,7 @@
     "react-scripts": "1.0.17",
     "reactbulma": "github:ruhacks/react-bulma#a72f7f2",
     "redux": "^3.7.2",
-    "uuid": "^3.1.0"
+    "uuid": "^8.3.2"
   },
   "scripts": {
     "start": "react-scripts start",
